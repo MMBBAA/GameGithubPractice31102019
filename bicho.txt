@@ -1,0 +1,1 @@
+C:\Users\ABM\juego\src\js\main.js: ENOENT: no such file or directory, open 'C:\Users\ABM\juego\src\js\main.js'

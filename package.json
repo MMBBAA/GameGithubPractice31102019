@@ -1,0 +1,21 @@
+{
+  "name": "juego",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/js/main.ts",
+  "dependencies": {
+    "js": "^0.1.0",
+    "nodemon": "^1.19.4",
+    "parcel": "^1.12.4",
+    "phaser": "^3.20.1",
+    "src": "^1.1.2",
+    "typescript": "^3.6.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "dev": "npx parcel index.html --open"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
