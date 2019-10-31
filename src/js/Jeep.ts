@@ -32,17 +32,10 @@ export class Jeep extends GameObjects.Sprite {
   currentImage = null;
 
 
-  constructor (scene, config) {
-    super(scene, config.x, config.y, 'jeep', 'back')
-    
-
-    this.xInitial = config.xInitial;
-    this.yInitial = config.yInitial;
-
-    this.assets = {};
-    this.assets.dir = "assets/images/";
-    this.assets.images = [
-      {
+  assets = {
+    dir: "assets/images/",
+    images: [
+            {
 	direction: "up",
 	obj: "jeep",
 	src: "jeepUp.png"
@@ -65,40 +58,52 @@ export class Jeep extends GameObjects.Sprite {
 	obj: "jeep",
 	src: "jeepRight.png"
       }
-    ];
+    ]
+  }
 
-    this.assets.images.forEach((i) => {
-      this.images[i.direction] = this.add.image();
-      this.images[i.direction].src = `${this.assets.dir}${i.src}`;
-    });
-
-    // jeep
-    this.add.audio('Jeep', "assets/music/Jeep_En_Marcha_3.mp3");
-    this.add.audio('Arranque', "assets/music/Jeep_Arrancando.mp3");
-    this.add.audio('Freno', "assets/music/Jeep_Frenando.mp3");
-    this.add.audio('BateriaBaja', "assets/music/Bateria_Baja.mp3");
-    this.add.audio('RecargaEnergia', "assets/music/Recarga_Energia.mp3");
-    this.add.audio('oxigenoBajo', "assets/music/Oxigeno_Bajo.mp3");
-    this.add.audio('Energia', "assets/music/Sonido_Energia_0.mp3")
-
-    this.add.audio( 'ImpactoHuracan2', "assets/music/Sonido_Colision_Huracan.mp3");
-
-    // impact
-    this.add.audio('ImpactoCrater', "assets/music/Sonido_Colision_Crater.mp3");
-    this.add.audio('ImpactoHuracan', "assets/music/Impacto_Huracan.mp3");
-
-    this.add.audio('VueltaBase', "assets/music/Traer_Jeep_Vuelta_A_Base.mp3");
-    this.add.audio('VueltaBase2', "assets/music/Traer_Jeep_Vuelta_A_Base.mp3");
-
-    this.add.audio('MuestraRecogida', "assets/music/Muestra_Recogida.mp3");
-
-    // shields
-    this.add.audio('EscudosBajos', "assets/music/Escudos_Bajos.mp3");
-    this.add.audio('EscudosBajos2', "assets/music/Sonido_Escudos_Bajos.mp3");
-    this.add.audio('ShieldReload', "assets/music/Sonido_Recarga_Escudos.mp3");
+  
+  constructor (scene, config) {
+    super(scene, config.x, config.y, 'jeep', 'back')
+    
+    this.xInitial = config.xInitial;
+    this.yInitial = config.yInitial;
 
     scene.add.existing(this);
     this.initialise(false);
+  }
+
+  preload() {
+    
+    this.assets.images.forEach((i) => {
+     this.images.url = `${this.assets.dir}${i.src}`;
+     this.images.id = `jeep${i.direction}`;
+     this.load.image(this.images.id, this.images.url);
+    });
+
+    // jeep
+    this.load.audio('Jeep', "assets/music/Jeep_En_Marcha_3.mp3");
+    this.load.audio('Arranque', "assets/music/Jeep_Arrancando.mp3");
+    this.load.audio('Freno', "assets/music/Jeep_Frenando.mp3");
+    this.load.audio('BateriaBaja', "assets/music/Bateria_Baja.mp3");
+    this.load.audio('RecargaEnergia', "assets/music/Recarga_Energia.mp3");
+    this.load.audio('oxigenoBajo', "assets/music/Oxigeno_Bajo.mp3");
+    this.load.audio('Energia', "assets/music/Sonido_Energia_0.mp3")
+
+    this.load.audio( 'ImpactoHuracan2', "assets/music/Sonido_Colision_Huracan.mp3");
+
+    // impact
+    this.load.audio('ImpactoCrater', "assets/music/Sonido_Colision_Crater.mp3");
+    this.load.audio('ImpactoHuracan', "assets/music/Impacto_Huracan.mp3");
+
+    this.load.audio('VueltaBase', "assets/music/Traer_Jeep_Vuelta_A_Base.mp3");
+    this.load.audio('VueltaBase2', "assets/music/Traer_Jeep_Vuelta_A_Base.mp3");
+
+    this.load.audio('MuestraRecogida', "assets/music/Muestra_Recogida.mp3");
+
+    // shields
+    this.load.audio('EscudosBajos', "assets/music/Escudos_Bajos.mp3");
+    this.load.audio('EscudosBajos2', "assets/music/Sonido_Escudos_Bajos.mp3");
+    this.load.audio('ShieldReload', "assets/music/Sonido_Recarga_Escudos.mp3");
   }
 
   initialise(destruido) {
