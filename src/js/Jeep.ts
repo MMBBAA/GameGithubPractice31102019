@@ -2,288 +2,284 @@ import { GameObjects, Scene } from 'phaser'
 
 export class Jeep extends GameObjects.Sprite {
 
-	height = 20;
-	width = 20;
-	radius = 20;
+  height = 20;
+  width = 20;
+  radius = 20;
 
-	escudosInitial = 1000;
-	escudos = this.escudosInitial;
-	escudosNivelDeAdvertencia = 100;
-	escudosDestruidos = false;
+  escudosInitial = 1000;
+  escudos = this.escudosInitial;
+  escudosNivelDeAdvertencia = 100;
+  escudosDestruidos = false;
 
-	// segundos de oxigeno 7599
-	segundosInitial = 7599;
-	segundos = this.segundosInitial;
+  // segundos de oxigeno 7599
+  segundosInitial = 7599;
+  segundos = this.segundosInitial;
 
-	energia = 1000;
+  energia = 1000;
 
-	dirrecionInicio = "right";
-	dirrecion = this.dirrecionInicio;
+  dirrecionInicio = "right";
+  dirrecion = this.dirrecionInicio;
 
-	xInitial = null;
-	yInitial = null;
-	x = null;
-	y = null;
+  xInitial = null;
+  yInitial = null;
+  x = null;
+  y = null;
 
-	speedY = 15;
-	speedX = 10;
-	images = [];
-	sounds = [];
-	currentImage = null;
+  speedY = 15;
+  speedX = 10;
+  images = [];
+  sounds = [];
+  currentImage = null;
 
 
   constructor (scene, config) {
-	super(scene, config.x, config.y, 'jeep', 'back')
-	
+    super(scene, config.x, config.y, 'jeep', 'back')
+    
 
-		this.xInitial = config.xInitial;
-		this.yInitial = config.yInitial;
+    this.xInitial = config.xInitial;
+    this.yInitial = config.yInitial;
 
-		this.assets = {};
-		this.assets.dir = "assets/images/";
-		this.assets.images = [
-			{
-				direction: "up",
-				obj: "jeep",
-				src: "jeepUp.png"
-			},
+    this.assets = {};
+    this.assets.dir = "assets/images/";
+    this.assets.images = [
+      {
+	direction: "up",
+	obj: "jeep",
+	src: "jeepUp.png"
+      },
 
-			{
-				direction: "down",
-				obj: "jeep",
-				src: "jeepDown.png"
-			},
+      {
+	direction: "down",
+	obj: "jeep",
+	src: "jeepDown.png"
+      },
 
-			{
-				direction: "left",
-				obj: "jeep",
-				src: "jeepLeft.png"
-			},
+      {
+	direction: "left",
+	obj: "jeep",
+	src: "jeepLeft.png"
+      },
 
-			{
-				direction: "right",
-				obj: "jeep",
-				src: "jeepRight.png"
-			}
-		];
+      {
+	direction: "right",
+	obj: "jeep",
+	src: "jeepRight.png"
+      }
+    ];
 
-		this.assets.images.forEach((i) => {
-			this.images[i.direction] = this.add.image();
-			this.images[i.direction].src = `${this.assets.dir}${i.src}`;
-		});
+    this.assets.images.forEach((i) => {
+      this.images[i.direction] = this.add.image();
+      this.images[i.direction].src = `${this.assets.dir}${i.src}`;
+    });
 
-		// jeep
-		this.sounds['Jeep'] = this.add.audio("assets/music/Jeep_En_Marcha_3.mp3");
-		this.sounds['Arranque'] = this.add.audio("assets/music/Jeep_Arrancando.mp3");
-		this.sounds['Freno'] = this.add.audio("assets/music/Jeep_Frenando.mp3");
-		this.sounds['BateriaBaja'] = this.add.audio("assets/music/Bateria_Baja.mp3");
-		this.sounds['RecargaEnergia'] = this.add.audio("assets/music/Recarga_Energia.mp3");
-		this.sounds['oxigenoBajo'] = this.add.audio("assets/music/Oxigeno_Bajo.mp3");
-		this.sounds['Energia'] = this.add.audio("assets/music/Sonido_Energia_0.mp3");
+    // jeep
+    this.add.audio('Jeep', "assets/music/Jeep_En_Marcha_3.mp3");
+    this.add.audio('Arranque', "assets/music/Jeep_Arrancando.mp3");
+    this.add.audio('Freno', "assets/music/Jeep_Frenando.mp3");
+    this.add.audio('BateriaBaja', "assets/music/Bateria_Baja.mp3");
+    this.add.audio('RecargaEnergia', "assets/music/Recarga_Energia.mp3");
+    this.add.audio('oxigenoBajo', "assets/music/Oxigeno_Bajo.mp3");
+    this.add.audio('Energia', "assets/music/Sonido_Energia_0.mp3")
 
-		this.sounds['ImpactoHuracan2'] = this.add.audio(
-			"assets/music/Sonido_Colision_Huracan.mp3"
-		);
+    this.add.audio( 'ImpactoHuracan2', "assets/music/Sonido_Colision_Huracan.mp3");
 
-		// impact
-		this.sounds['ImpactoCrater'] = this.add.audio("assets/music/Sonido_Colision_Crater.mp3");
-		this.sounds['ImpactoHuracan'] = this.add.audio("assets/music/Impacto_Huracan.mp3");
+    // impact
+    this.add.audio('ImpactoCrater', "assets/music/Sonido_Colision_Crater.mp3");
+    this.add.audio('ImpactoHuracan', "assets/music/Impacto_Huracan.mp3");
 
-		this.sounds['VueltaBase'] = this.add.audio("assets/music/Traer_Jeep_Vuelta_A_Base.mp3");
-		this.sounds['VueltaBase2'] = this.add.audio("assets/music/Traer_Jeep_Vuelta_A_Base.mp3");
+    this.add.audio('VueltaBase', "assets/music/Traer_Jeep_Vuelta_A_Base.mp3");
+    this.add.audio('VueltaBase2', "assets/music/Traer_Jeep_Vuelta_A_Base.mp3");
 
-		this.sounds['MuestraRecogida'] = this.add.audio("assets/music/Muestra_Recogida.mp3");
+    this.add.audio('MuestraRecogida', "assets/music/Muestra_Recogida.mp3");
 
-		// shields
-		this.sounds['EscudosBajos'] = this.add.audio("assets/music/Escudos_Bajos.mp3");
-		this.sounds['EscudosBajos2'] = this.add.audio(
-			"assets/music/Sonido_Escudos_Bajos.mp3"
-		);
-		this.sounds['ShieldReload'] = this.add.audio("assets/music/Sonido_Recarga_Escudos.mp3");
+    // shields
+    this.add.audio('EscudosBajos', "assets/music/Escudos_Bajos.mp3");
+    this.add.audio('EscudosBajos2', "assets/music/Sonido_Escudos_Bajos.mp3");
+    this.add.audio('ShieldReload', "assets/music/Sonido_Recarga_Escudos.mp3");
 
-	scene.add.existing(this);
-		   this.initialise(false);
-	}
+    scene.add.existing(this);
+    this.initialise(false);
+  }
 
-	initialise(destruido) {
-		this.escudos = this.escudosInitial;
-		this.escudosDestruidos = destruido;
-		this.x = this.xInitial;
-		this.y = this.yInitial;
-		this.setDirection(this.dirrecionInicio);
-		this.energyReload();
-		this.arranque();
-	}
+  initialise(destruido) {
+    this.escudos = this.escudosInitial;
+    this.escudosDestruidos = destruido;
+    this.x = this.xInitial;
+    this.y = this.yInitial;
+    this.setDirection(this.dirrecionInicio);
+    this.energyReload();
+    this.arranque();
+  }
 
-	recarga() {
-		this.sounds['MuestraRecogida'].play();
-	}
+  recarga() {
+    this.sounds['MuestraRecogida'].play();
+  }
 
-	// se produce sonido cuando el jeep está recargando
-	energyReload() {
-		this.sounds['RecargaEnergia'].play();
-	}
+  // se produce sonido cuando el jeep está recargando
+  energyReload() {
+    this.sounds['RecargaEnergia'].play();
+  }
 
-	// was soundshieldLow
-	// low shields
-	escudidosBajos() {
-		this.sounds['EscudosBajos'].play();
-	}
+  // was soundshieldLow
+  // low shields
+  escudidosBajos() {
+    this.sounds['EscudosBajos'].play();
+  }
 
-	// return jeep to base
-	vueltaBase() {
-		this.sounds['VueltaBase'].play();
-	}
+  // return jeep to base
+  vueltaBase() {
+    this.sounds['VueltaBase'].play();
+  }
 
-	arranque() {
-		this.sounds['Arranque'].play();
-	}
+  arranque() {
+    this.sounds['Arranque'].play();
+  }
 
-	freno() {
-		this.sounds['Jeep'].pause();
-		this.sounds['Freno'].play();
-	}
+  freno() {
+    this.sounds['Jeep'].pause();
+    this.sounds['Freno'].play();
+  }
 
-	// was soundsampleTaken
-	// jeep recoge muesta (sample)
-	muesta() {
-		this.sounds['MuestraRecogida'].play();
-	}
+  // was soundsampleTaken
+  // jeep recoge muesta (sample)
+  muesta() {
+    this.sounds['MuestraRecogida'].play();
+  }
 
-	// jeep recolecta recursos o muestas
-	recursoRecolecta() {
-		this.sounds['recursoRecogido'].play();
-	}
+  // jeep recolecta recursos o muestas
+  recursoRecolecta() {
+    this.sounds['recursoRecogido'].play();
+  }
 
-	sinEnergia() {
-		this.sound['Energia'].play();
-		this.sound['freno'].play();
-	}
+  sinEnergia() {
+    this.sound['Energia'].play();
+    this.sound['freno'].play();
+  }
 
-	// se produce cuando el jeep recarga escudos en la base
-	ShieldReload() {
-		this.sounds['ShieldReload'].play();
-	}
+  // se produce cuando el jeep recarga escudos en la base
+  ShieldReload() {
+    this.sounds['ShieldReload'].play();
+  }
 
-	// se produce cuando el jeep es tocado por un huracan
-	collisionHurricane() {
-		this.sounds['ImpactoHuracan'].play();
-	}
-	// se produce cuando el jeep choca con un crater
-	craterCollision() {
-		this.sounds['ImpactoCrater'].play();
-		this.escudos -= 1;
-		switch (true) {
-			case this.direction === "up":
-				this.y += 1;
-				break;
-			case this.direction === "down":
-				this.y -= 1;
-				break;
-			case this.direction === "left":
-				this.x -= 1;
-				break;
-			case this.direction === "right":
-				break;
-			default:
-			// code block
-		}
-	}
-	
-	Ty() {
-		return this.y + this.radius;
-	}
+  // se produce cuando el jeep es tocado por un huracan
+  collisionHurricane() {
+    this.sounds['ImpactoHuracan'].play();
+  }
+  // se produce cuando el jeep choca con un crater
+  craterCollision() {
+    this.sounds['ImpactoCrater'].play();
+    this.escudos -= 1;
+    switch (true) {
+      case this.direction === "up":
+	this.y += 1;
+	break;
+      case this.direction === "down":
+	this.y -= 1;
+	break;
+      case this.direction === "left":
+	this.x -= 1;
+	break;
+      case this.direction === "right":
+	break;
+      default:
+	// code block
+    }
+  }
+  
+  Ty() {
+    return this.y + this.radius;
+  }
 
-	Tx() {
-		return this.x + this.radius;
-	}
+  Tx() {
+    return this.x + this.radius;
+  }
 
-	muerto() {
-		return this.escudos === 0;
-		// this.oxigeno === 0 ||
-	}
+  muerto() {
+    return this.escudos === 0;
+    // this.oxigeno === 0 ||
+  }
 
-	// informa si la batería está por debajo de 150, se repite continuamente
-	batteryLowCheck() {
-		if (this.energia <= 100) {
-			this.bateria_baja.play();
-		}
-	}
+  // informa si la batería está por debajo de 150, se repite continuamente
+  batteryLowCheck() {
+    if (this.energia <= 100) {
+      this.bateria_baja.play();
+    }
+  }
 
-	get oxigenoAgotado() {
-		return this.segundos === 0;
-	}
+  get oxigenoAgotado() {
+    return this.segundos === 0;
+  }
 
-	get oxigenLow() {
-		return this.segundos <= 1000 && this.segundos > 0;
-	}
+  get oxigenLow() {
+    return this.segundos <= 1000 && this.segundos > 0;
+  }
 
-	oxigenCheck() {
-		if (this.oxigenlow) {
-			this.oxigenoBajo.play();
-		}
+  oxigenCheck() {
+    if (this.oxigenlow) {
+      this.oxigenoBajo.play();
+    }
 
-		if (this.oxigenoAgotado) {
-			this.onFailure();
-		}
-	}
+    if (this.oxigenoAgotado) {
+      this.onFailure();
+    }
+  }
 
-	onFailure() {
+  onFailure() {
 
-	}
+  }
 
-	// informa si los escudos están entre 0 y escudosNivelDeAdvertencia
-	get shieldLow() {
-		return this.escudos <= this.escudosNivelDeAdvertencia && this.escudos > 0;
-	}
+  // informa si los escudos están entre 0 y escudosNivelDeAdvertencia
+  get shieldLow() {
+    return this.escudos <= this.escudosNivelDeAdvertencia && this.escudos > 0;
+  }
 
-	shieldCheck() {
-		if (this.shieldLow) {
-			this.sounds['EscudosBajos'].play();
-			this.sounds['EscudosBajos2'].play();
-		}
+  shieldCheck() {
+    if (this.shieldLow) {
+      this.sounds['EscudosBajos'].play();
+      this.sounds['EscudosBajos2'].play();
+    }
 
-		if (this.escudos == 0) {
-			this.onFailure();
-		}
-	}
+    if (this.escudos == 0) {
+      this.onFailure();
+    }
+  }
 
 
-	setDirection(direction) {
-		this.direction = direction;
-		this.currentImage = this.images[direction];
-	}
+  setDirection(direction) {
+    this.direction = direction;
+    this.currentImage = this.images[direction];
+  }
 
-	_move(direction) {
-		this.sounds['Jeep'].play();
-		this.setDirection(direction);
-		this.sounds['Freno'].pause();
-	}
+  _move(direction) {
+    this.sounds['Jeep'].play();
+    this.setDirection(direction);
+    this.sounds['Freno'].pause();
+  }
 
-	moveRight() {
-		this.x += this.speedX;
-		this._move("right");
-	}
+  moveRight() {
+    this.x += this.speedX;
+    this._move("right");
+  }
 
-	moveLeft() {
-		this.x -= this.speedX
-		this._move("left");
-	}
+  moveLeft() {
+    this.x -= this.speedX
+    this._move("left");
+  }
 
-	moveUp() {
-		this.y -= this.speedY;
-		this._move("up");
-	}
+  moveUp() {
+    this.y -= this.speedY;
+    this._move("up");
+  }
 
-	moveDown() {
-		this.y += this.speedY;
-		this._move("down");
-	}
+  moveDown() {
+    this.y += this.speedY;
+    this._move("down");
+  }
 
-	dibujar(ctx, x = this.x, y = this.y) {
-		ctx.beginPath();
-		ctx.arc(x, y, this.radius, 0, Math.PI * 2);
-		ctx.drawImage(this.currentImage, x - 10, y - 15, 30, 30);
-		ctx.closePath();
-	}
+  dibujar(ctx, x = this.x, y = this.y) {
+    ctx.beginPath();
+    ctx.arc(x, y, this.radius, 0, Math.PI * 2);
+    ctx.drawImage(this.currentImage, x - 10, y - 15, 30, 30);
+    ctx.closePath();
+  }
 }
