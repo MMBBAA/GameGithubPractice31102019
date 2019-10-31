@@ -4,7 +4,7 @@ export class Jeep extends GameObjects.Sprite {
 
   height = 20;
   width = 20;
-  radius = 20;
+  radius = 20
 
   escudosInitial = 1000;
   escudos = this.escudosInitial;
@@ -117,43 +117,44 @@ export class Jeep extends GameObjects.Sprite {
   }
 
   recarga() {
-    this.sounds['MuestraRecogida'].play();
+
+    this.sounds('MuestraRecogida').play();
   }
 
   // se produce sonido cuando el jeep está recargando
   energyReload() {
-    this.sounds['RecargaEnergia'].play();
+    this.sounds('RecargaEnergia').play();
   }
 
   // was soundshieldLow
   // low shields
   escudidosBajos() {
-    this.sounds['EscudosBajos'].play();
+    this.sounds('EscudosBajos').play();
   }
 
   // return jeep to base
   vueltaBase() {
-    this.sounds['VueltaBase'].play();
+    this.sounds('VueltaBase').play();
   }
 
   arranque() {
-    this.sounds['Arranque'].play();
+    this.sounds('Arranque').play();
   }
 
   freno() {
-    this.sounds['Jeep'].pause();
-    this.sounds['Freno'].play();
+    this.sounds('Jeep').pause();
+    this.sounds('Freno').play();
   }
 
   // was soundsampleTaken
   // jeep recoge muesta (sample)
   muesta() {
-    this.sounds['MuestraRecogida'].play();
+    this.sounds('MuestraRecogida').play();
   }
 
   // jeep recolecta recursos o muestas
   recursoRecolecta() {
-    this.sounds['recursoRecogido'].play();
+    this.sounds('recursoRecogido').play();
   }
 
   sinEnergia() {
@@ -163,16 +164,16 @@ export class Jeep extends GameObjects.Sprite {
 
   // se produce cuando el jeep recarga escudos en la base
   ShieldReload() {
-    this.sounds['ShieldReload'].play();
+    this.sounds('ShieldReload').play();
   }
 
   // se produce cuando el jeep es tocado por un huracan
   collisionHurricane() {
-    this.sounds['ImpactoHuracan'].play();
+    this.sounds('ImpactoHuracan').play();
   }
   // se produce cuando el jeep choca con un crater
   craterCollision() {
-    this.sounds['ImpactoCrater'].play();
+    this.sounds('ImpactoCrater').play();
     this.escudos -= 1;
     switch (true) {
       case this.direction === "up":
@@ -240,8 +241,8 @@ export class Jeep extends GameObjects.Sprite {
 
   shieldCheck() {
     if (this.shieldLow) {
-      this.sounds['EscudosBajos'].play();
-      this.sounds['EscudosBajos2'].play();
+      this.sounds('EscudosBajos').play();
+      this.sounds('EscudosBajos2').play();
     }
 
     if (this.escudos == 0) {
@@ -256,9 +257,9 @@ export class Jeep extends GameObjects.Sprite {
   }
 
   _move(direction) {
-    this.sounds['Jeep'].play();
+    this.sounds('Jeep').play();
     this.setDirection(direction);
-    this.sounds['Freno'].pause();
+    this.sounds('Freno').pause();
   }
 
   moveRight() {

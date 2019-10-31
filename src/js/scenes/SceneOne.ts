@@ -1,5 +1,5 @@
 import { Scene, Physics } from 'phaser';
-//import { Jeep } from '../Jeep';
+import { Jeep } from '../Jeep';
 
 export class SceneOne extends Scene {
     iconobase: Phaser.GameObjects.Image | undefined;
@@ -18,7 +18,7 @@ export class SceneOne extends Scene {
         this.iconobase = this.add.image(400, 300, 'base');
     //    this.myLogo.setScale(0.3);
 
-   //this.jeep = new Jeep(this, 200, 400);
+  this.jeep = new Jeep(this, 200, 400);
     }
 
     update() {
