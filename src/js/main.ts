@@ -20,7 +20,6 @@ const mySettings = {
     }
 }
 
-
 //only run when  the DOM Content is Loaded.
 
 document.addEventListener('DOMContentLoaded', () => {
