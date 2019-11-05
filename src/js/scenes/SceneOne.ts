@@ -6,6 +6,7 @@ export class SceneOne extends Scene {
     iconobase: Phaser.GameObjects.Image | undefined;
 
     jeep: Jeep2;
+    jeep2: Jeep2;
 
     constructor() {
         super({
@@ -22,9 +23,12 @@ export class SceneOne extends Scene {
 
     create() {
         this.iconobase = this.add.sprite(400, 300, 'base');
-        this.jeep = new Jeep2(this, 10,20);
-        this.jeep.sprite = this.add.sprite(400, 300, 'jeepRight');
+        this.jeep = new Jeep2(this, 400,300);
+        this.jeep.sprite = this.add.sprite(this.jeep.x,this.jeep.y, 'jeepRight');
         this.jeep.sprite.setScale(0.2);
+        this.jeep2 = new Jeep2(this, 40,120);
+        this.jeep2.sprite = this.add.sprite(this.jeep2.x,this.jeep2.y, 'jeepRight');
+        this.jeep2.sprite.setScale(0.2);
 
   //this.jeep = new Jeep(this, 200, 400);
   
