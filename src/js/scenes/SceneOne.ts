@@ -1,6 +1,7 @@
 import { Scene, Physics, Input, Cameras } from 'phaser';
 //import { Jeep } from '../Jeep';
 import { Jeep2 } from '../Jeep2';
+import { AssetsConfig } from '../Assets';
 
 export class SceneOne extends Scene {
     iconobase: Phaser.GameObjects.Image | undefined;
@@ -41,6 +42,18 @@ export class SceneOne extends Scene {
         this.messageBoxSetup();
         // this.cameraSetup();
     }
+    //función para cargar las imágenes
+    loadImagesFunction(){
+        AssetsConfig.images.forEach(
+            (imagen ) =>{
+                //hace referencia al objeto scene
+                let url=`${AssetsConfig.images_dir}${imagen.src}`;
+                this.load(imagen.id,url);
+            }
+        );
+    }
+    //función para cargar sonidos
+    loadSoundsFunction(){}
     //funcion para crear cámara
     cameraSetup() {
        const camera = this.cameras.main;

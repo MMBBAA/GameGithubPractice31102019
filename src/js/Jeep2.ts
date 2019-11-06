@@ -1,5 +1,6 @@
  import {  Scene, GameObjects } from 'phaser';
 
+
 export class Jeep2 {
 
     initialX: number

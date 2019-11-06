@@ -1,22 +1,25 @@
 {
-  "name": "juego",
-  "version": "1.0.0",
-  "description": "",
-  "main": "src/js/main.ts",
-  "dependencies": {
-    "js": "^0.1.0",
-    "nodemon": "^1.19.4",
-    "parcel": "^1.12.4",
-    "phaser": "^3.20.1",
-    "src": "^1.1.2"
-  },
-  "devDependencies": {
-    "typescript": "^3.6.4"
-  },
-  "scripts": {
-    "dev": "npx parcel index.html --open"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+    "name": "juego",
+    "version": "1.0.0",
+    "description": "",
+    "main": "src/js/main.ts",
+    "dependencies": {
+	"express": "^4.17.1",
+	"js": "^0.1.0",
+	"nodemon": "^1.19.4",
+	"parcel": "^1.12.4",
+	"phaser": "^3.20.1",
+	"src": "^1.1.2"
+    },
+    "devDependencies": {
+	"typescript": "^3.7.2"
+    },
+    "scripts": {
+	"start": "node server.js",
+	"prestart": "parcel build index.html",
+	"dev": "npx parcel index.html --open"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC"
 }
