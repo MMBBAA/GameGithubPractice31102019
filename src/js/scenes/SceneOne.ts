@@ -1,7 +1,7 @@
 import { Scene, Physics, Input, Cameras } from 'phaser';
 //import { Jeep } from '../Jeep';
 import { Jeep2 } from '../Jeep2';
-import { AssetsConfig } from '../Assets';
+import { AssetsConfig } from './Assets';
 
 export class SceneOne extends Scene {
     iconobase: Phaser.GameObjects.Image | undefined;
@@ -20,11 +20,22 @@ export class SceneOne extends Scene {
         super({
             key: 'SceneOne'
         })
+        this.scene = this;
     }
 
     preload() {
-        this.load.image('base', '../../../assets/images/iconobase.png');
-        this.load.image('jeepRight', '../../../assets/images/jeepRight.png');
+
+  //this.load.image('jeepRight', '../../../assets/images/jeepRight.png');
+        AssetsConfig.images.forEach((imagen) => {
+            //hace referencia al objeto scene
+            let url: string = `${AssetsConfig.images_dir}${imagen.src}`;
+            let key: string = `jeep${imagen.id}`;
+            this.load.image(key, url);
+            console.log(`id: ${imagen.id}`);
+        }, this);
+
+        this.loadImagesFunction();
+        this.loadSoundsFunction();
     }
 
     create() {
@@ -40,25 +51,22 @@ export class SceneOne extends Scene {
         this.collisionSetup();
         this.collisionBaseAndJeepSetup();
         this.messageBoxSetup();
+
         // this.cameraSetup();
     }
     //función para cargar las imágenes
-    loadImagesFunction(){
-        AssetsConfig.images.forEach(
-            (imagen ) =>{
-                //hace referencia al objeto scene
-                let url=`${AssetsConfig.images_dir}${imagen.src}`;
-                this.load(imagen.id,url);
-            }
-        );
+    loadImagesFunction() {
+         this.load.image('base', '../../../assets/images/iconobase.png');
+                              
+      
     }
     //función para cargar sonidos
-    loadSoundsFunction(){}
+    loadSoundsFunction() { }
     //funcion para crear cámara
     cameraSetup() {
-       const camera = this.cameras.main;
-       camera.setViewport(150, 150, 300, 300);
-       camera.startFollow(this.jeep.sprite);
+        const camera = this.cameras.main;
+        camera.setViewport(150, 150, 300, 300);
+        camera.startFollow(this.jeep.sprite);
     }
 
 
@@ -119,7 +127,7 @@ export class SceneOne extends Scene {
 
     playerHit() {
         this.message(`jeep colission in ${this.jeep.x} and ${this.jeep.y}`);
-    
+
     }
     baseHit() {
         this.message(`base colission in ${this.jeep.x} and ${this.jeep.y}`);
