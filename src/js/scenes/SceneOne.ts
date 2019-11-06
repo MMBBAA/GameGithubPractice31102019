@@ -21,18 +21,13 @@ export class SceneOne extends Scene {
             key: 'SceneOne'
         })
         this.scene = this;
+        this.jeep = new Jeep2(this, 400, 300);
+        this.jeep2 = new Jeep2(this, 40, 120);
     }
 
     preload() {
+        this.jeep.preloadImages(this, AssetsConfig.images )
 
-  //this.load.image('jeepRight', '../../../assets/images/jeepRight.png');
-        AssetsConfig.images.forEach((imagen) => {
-            //hace referencia al objeto scene
-            let url: string = `${AssetsConfig.images_dir}${imagen.src}`;
-            let key: string = `jeep${imagen.id}`;
-            this.load.image(key, url);
-            console.log(`id: ${imagen.id}`);
-        }, this);
 
         this.loadImagesFunction();
         this.loadSoundsFunction();
@@ -40,11 +35,10 @@ export class SceneOne extends Scene {
 
     create() {
         this.iconoBase = this.physics.add.sprite(400, 300, 'base');
-        this.jeep = new Jeep2(this, 400, 300);
 
         this.jeep.sprite = this.physics.add.sprite(this.jeep.x, this.jeep.y, 'jeepRight');
         this.jeep.sprite.setScale(0.15);
-        this.jeep2 = new Jeep2(this, 40, 120);
+
         this.jeep2.sprite = this.physics.add.sprite(this.jeep2.x, this.jeep2.y, 'jeepRight');
         this.jeep2.sprite.setScale(0.15);
         this.keysSetup();
@@ -56,9 +50,9 @@ export class SceneOne extends Scene {
     }
     //función para cargar las imágenes
     loadImagesFunction() {
-         this.load.image('base', '../../../assets/images/iconobase.png');
-                              
-      
+        this.load.image('base', '../../../assets/images/iconobase.png');
+
+
     }
     //función para cargar sonidos
     loadSoundsFunction() { }

@@ -59,6 +59,8 @@ export class Jeep {
     this.loadAudio();
   }
 
+ 
+
   loadImages() {
     this.assets.images.forEach((item) => {
       let key =  this.images[item.direction];  
@@ -286,37 +288,9 @@ export class Jeep {
     this.sounds[soundID] && this.sounds[soundID].pause();
   }
 
-
   setDirection(direction) {
     this.direction = direction;
     this.currentImage = this.images[direction];
-  }
-
-  _move(direction, x = this.x, y = this.y) {
-    if (!this.fatalFailure) {
-      this.x = x;
-      this.y = y;
-      this.playSound('Jeep');
-      this.setDirection(direction);
-      // this.playSound('Freno');
-      this.bateria--;
-    }
-  }
-
-  moveRight(x = this.x + this.speedX) {
-    this._move("right", x, this.y);
-  }
-
-  moveLeft(x = this.x - this.speedX) {
-    this._move("left", x, this.y);
-  }
-
-  moveUp(y = this.y - this.speedY) {
-    this._move("up", this.x, y);
-  }
-
-  moveDown(y = this.y + this.speedY) {
-    this._move("down", this.x, y);
   }
 
   dibujar(ctx) {
