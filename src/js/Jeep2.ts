@@ -17,6 +17,8 @@ export class Jeep2 {
         this.reset();
         this.createMessageBox();
     }
+
+    
     //creacion de un metodo
     reset() {
         this.x = this.initialX;
@@ -47,6 +49,17 @@ export class Jeep2 {
     }
 
 
-
+    moveLeft(){
+        this.x-=2;
+    }
+    moveRight(){
+        this.x+=2;
+    }
+    moveUp(){
+        this.y-=2;
+    }
+    moveDown(){
+        this.y+=2;
+    }
 
 }
