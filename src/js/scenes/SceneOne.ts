@@ -1,4 +1,4 @@
-import { Scene, Physics, Input } from 'phaser';
+import { Scene, Physics, Input, Cameras } from 'phaser';
 //import { Jeep } from '../Jeep';
 import { Jeep2 } from '../Jeep2';
 
@@ -39,7 +39,13 @@ export class SceneOne extends Scene {
         this.collisionSetup();
         this.collisionBaseAndJeepSetup();
         this.messageBoxSetup();
-
+        // this.cameraSetup();
+    }
+    //funcion para crear cámara
+    cameraSetup() {
+       const camera = this.cameras.main;
+       camera.setViewport(150, 150, 300, 300);
+       camera.startFollow(this.jeep.sprite);
     }
 
 
