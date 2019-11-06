@@ -12,7 +12,8 @@ export class SceneOne extends Scene {
     key_A: Input.Keyboard.Key;
     key_S: Input.Keyboard.Key;
     iconoBase: Phaser.GameObjects.Sprite;
-
+    onBase: boolean = true;
+    messageBox: Phaser.GameObjects.Text;
 
     constructor() {
         super({
@@ -37,6 +38,7 @@ export class SceneOne extends Scene {
         this.keysSetup();
         this.collisionSetup();
         this.collisionBaseAndJeepSetup();
+        this.messageBoxSetup();
 
     }
 
@@ -58,6 +60,23 @@ export class SceneOne extends Scene {
         this.keysListener();
         this.jeep.updateXYPhaser();
         this.jeep.displayCoordinates();
+
+        const collision = this.physics.collide(
+            this.jeep.sprite,
+            this.iconoBase);
+
+        console.log(`collision: ${collision}`);
+
+        if (!collision) {
+            this.baseHit = false
+
+        } else {
+            this.baseHit = true
+        }
+
+
+        // console.log(this.physics.world.overlap(this.jeep.sprite, this.iconoBase));
+
     }
     collisionSetup() {
         this.physics.add.collider(
@@ -67,13 +86,10 @@ export class SceneOne extends Scene {
             null,
             this);
     }
-
-    /*//función para controlar colisión con los bordes 
-    collisionBorderSetup() {
-        //desarrollar codigo
-    }*/
+    //colision de la base y el jeep
 
     collisionBaseAndJeepSetup() {
+
         this.physics.add.collider(
             this.iconoBase,
             this.jeep.sprite,
@@ -83,35 +99,36 @@ export class SceneOne extends Scene {
     }
 
     playerHit() {
-        this.add.text(
-            16,
-            16,
-            'ouch',
-            {
-                fontSize: '32px',
-                fill: 'red'
-            });
+        this.message(`jeep colission in ${this.jeep.x} and ${this.jeep.y}`);
+    
     }
     baseHit() {
-        this.add.text(
-            16,
-            16,
-            'baseColission',
-            {
-                fontSize: '32px',
-                fill: 'yellow'
-            });
+        this.message(`base colission in ${this.jeep.x} and ${this.jeep.y}`);
+    }
+    message(msg = '') {
+        this.messageBox.setText(msg);
+    }
+    //pantalla de mensaje
+    messageBoxSetup(msg = '', x = 50, y = 50) {
+        this.messageBox =
+            this.add.text(
+                x,
+                y,
+                msg,
+                {
+                    fontSize: '18px',
+                    fill: 'white'
+                });
     }
     //mensaje de colisión con bordes de pantalla
-   /* borderHit() {
-        this.add.text(
-            16,
-            16,
-            'border Colission',
-            {
-                fontSize: '32px',
-                fill: 'green'
-            });
-    }*/
-}
+    /* borderHit() {
+         this.add.text(
+             16,
+             16,
+             'border Colission',
+             {
+                 fontSize: '32px',
+                 fill: 'green'
+             });
+     }*/
 }
