@@ -48,8 +48,6 @@ export class SceneOne extends Scene {
     //función para cargar las imágenes
     loadImagesFunction() {
         this.load.image('base', '../../../assets/images/iconobase.png');
-
-
     }
     //función para cargar sonidos
     loadSoundsFunction() { }
@@ -116,11 +114,11 @@ export class SceneOne extends Scene {
     }
 
     playerHit() {
-        this.message(`jeep colission in ${this.jeep.x} and ${this.jeep.y}`);
+        this.message(`Jeep colission in ${this.jeep.x} and ${this.jeep.y}`);
 
     }
     baseHit() {
-        this.message(`base colission in ${this.jeep.x} and ${this.jeep.y}`);
+        this.message(`Base colission in ${this.jeep.x} and ${this.jeep.y}`);
     }
     message(msg = '') {
         this.messageBox.setText(msg);
