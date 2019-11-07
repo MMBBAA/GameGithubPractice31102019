@@ -1,21 +1,19 @@
-import { Scene, GameObjects } from 'phaser';
+import { Physics, Scene, GameObjects } from 'phaser';
 
 
 export class Jeep2 {
 
     initialX: number
     initialY: number
-    x: number
-    y: number
     scene: Scene
     messageBox
-    sprite: GameObjects.Sprite
+    sprite:  Physics.Arcade.Sprite
     bateria: number;
     bateriaInicial: number = 1000;
     initialDirection: string = 'right';
     direction: string;
     currentImage: any;
-    imageTextures : Array<any> = [];
+    imageTextures: Array<any> = [];
     fatalFailure: boolean = false;
     speed: number = 10;
 
@@ -27,22 +25,24 @@ export class Jeep2 {
         this.preloadImages();
         this.reset();
     }
-    
+
     preloadImages() {
         this.config.images.forEach((imagen) => {
             let dir = this.config.images_dir;
             let url = `${dir}${imagen.src}`;
             let key = imagen.id;
             this.scene.load.image(key, url);
-            this.imageTextures[imagen.direction] =  this.scene.textures.get(key);
+            this.imageTextures[imagen.direction] = this.scene.textures.get(key);
         });
     }
 
 
     //creacion de un metodo
     reset() {
-        this.x = this.initialX;
-        this.y = this.initialY;
+       if (this.sprite) {
+        this.sprite.x = this.initialX;
+        this.sprite.y = this.initialY;
+       }
         this.bateria = this.bateriaInicial;
         this.setDirection(this.initialDirection);
     }
@@ -50,19 +50,35 @@ export class Jeep2 {
 
     //función displayCoordinates
     displayCoordinates() {
-        this.message(`move to ${this.x} and ${this.y}`);
+        this.message(`move to ${this.sprite.x} and ${this.sprite.y}`);
     }
     message(msg = '') {
         // this.scene.message(msg);
     }
-    updateXYPhaser() {
-        this.sprite.x = this.x;
-        this.sprite.y = this.y;
-    }
+ 
 
     setDirection(direction: string) {
         this.direction = direction;
-        this.setSprite(direction)
+
+        // switch (direction) {
+        //     case 'up':
+        //         this.sprite.angle = 0;
+        //         break;
+
+        //     case 'down':
+        //         this.sprite.angle = 90
+        //         break;
+        //     case 'left':
+        //         this.sprite.angle = 180
+        //         break;
+        //     case 'right':
+
+        //         this.sprite.angle = 270
+        //         break;
+        //     default:
+        //         break;
+        // }
+         this.setSprite(direction)
     }
 
     setSprite(key) {
@@ -74,8 +90,8 @@ export class Jeep2 {
 
     _move(direction: string, dx = 1, dy = 1) {
         if (!this.fatalFailure) {
-            this.x = this.x + (dx * this.speed);
-            this.y = this.y + (dy * this.speed);
+            this.sprite.x = this.sprite.x + (dx * this.speed);
+            this.sprite.y = this.sprite.y + (dy * this.speed);
             //this.playSound('Jeep');
             this.setDirection(direction);
             // this.playSound('Freno');

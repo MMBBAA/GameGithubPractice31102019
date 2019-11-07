@@ -33,29 +33,74 @@ export class SceneOne extends Scene {
     create() {
         this.iconoBase = this.physics.add.sprite(400, 300, 'base');
 
-        this.jeep.sprite = this.physics.add.sprite(this.jeep.x, this.jeep.y, 'jeep_right');
+        this.jeep.sprite = this.physics.add.sprite(this.jeep.initialX, this.jeep.initialY, 'jeep_right');
         this.jeep.sprite.setScale(0.15);
 
-        this.jeep2.sprite = this.physics.add.sprite(this.jeep2.x, this.jeep2.y, 'jeep_right');
+        this.jeep2.sprite = this.physics.add.sprite(this.jeep2.initialX, this.jeep2.initialY, 'jeep_right');
         this.jeep2.sprite.setScale(0.15);
         this.keysSetup();
         this.collisionSetup();
         this.collisionBaseAndJeepSetup();
         this.messageBoxSetup();
-
+        // this.setupMouse();
         // this.cameraSetup();
+
+
+        this.physics.world.setBounds(0, 0, 800 + 300, 600 + 200);
+        this.physics.world.setBoundsCollision(true);
+        this.camera = this.cameras.main;
+        this.camera.setBounds(0, 0, 800 + 300, 600 + 200)
+        this.camera.startFollow(this.jeep.sprite);
+        this.controls = new Phaser.Cameras.Controls.FixedKeyControl(
+            {
+
+                camera: this.cameras.main,
+            })
+        this.jeep.sprite.setCollideWorldBounds(true);
     }
-    //función para cargar las imágenes
+
+
+    setupMouse() {
+        // Convert the mouse position to world position within the camera
+        const worldPoint = this.input.activePointer.positionToCamera(this.cameras.main);
+    }
+
+    mouseCheck() {
+        const pointer = this.input.activePointer;
+        const worldPoint = pointer.positionToCamera(this.cameras.main);
+        if (pointer.isDown) {
+            this.message(`Mouse clicked at ${worldPoint.x} ${worldPoint.y}`);
+        }
+    }
+
     loadImagesFunction() {
         this.load.image('base', '../../../assets/images/iconobase.png');
     }
-    //función para cargar sonidos
+
     loadSoundsFunction() { }
-    //funcion para crear cámara
+
     cameraSetup() {
-        const camera = this.cameras.main;
-        camera.setViewport(150, 150, 300, 300);
-        camera.startFollow(this.jeep.sprite);
+        // const camera = this.cameras.main;
+        // camera.setViewport(150, 150, 300, 300);
+
+        // Phaser supports multiple cameras, but you can access the default camera like this:
+
+        // Constrain the camera so that it isn't allowed to move outside the width/height of tilemap
+        // this.camera.setBounds(0, 0, this.sys.scale.width, this.sys.scale.height);
+
+        const cursors = this.input.keyboard.createCursorKeys();
+        const controlConfig = {
+            camera: this.cameras.main,
+            left: cursors.left,
+            right: cursors.right,
+            up: cursors.up,
+            down: cursors.down,
+            speed: 0.5
+        };
+        this.controls = new Phaser.Cameras.Controls.FixedKeyControl(controlConfig);
+
+        // Limit the camera to the map size
+        // this.cameras.main.setBounds(0, 0, this.sys.scale.width, this.sys.scale.height);
     }
 
     keysSetup() {
@@ -71,23 +116,33 @@ export class SceneOne extends Scene {
         if (this.key_S.isDown) this.jeep.moveDown();
         if (this.key_W.isDown) this.jeep.moveUp();
     }
-    update() {
+    update(delta, time) {
+        this.controls.update(delta);
+        // this.cameraSetup();
         this.keysListener();
-        this.jeep.updateXYPhaser();
         this.jeep.displayCoordinates();
-
+        //this.cameras.main.scrollX = this.jeep2.sprite.x;
+        // this.cameras.main.scrollY = this.jeep2.sprite.y;
+        // this.camera.main.world.setScroll(this.jeep.x, this.jeep.y)
+        // this.cameras.main.worldView.centerX = this.jeep.x; 
+        // this.cameras.main.setScroll(this.jeep.x, this.jeep.y)
+        // this.cameras.main.startFollow(this.jeep.sprite);
         const collision = this.physics.collide(
             this.jeep.sprite,
             this.iconoBase);
 
-        console.log(`collision: ${collision}`);
+        this.physics.world.on('worldbounds',
+            (body, blockedUp, blockedDown, blockedLeft, blockedRight) => {
+                alert('hit a wall')
+            });
+        // console.log(`collision: ${collision}`);
 
-        if (!collision) {
-            this.baseHit = false
+        // if (!collision) {
+        //     this.baseHit = false
 
-        } else {
-            this.baseHit = true
-        }
+        // } else {
+        //     this.baseHit = true
+        // }
 
 
         // console.log(this.physics.world.overlap(this.jeep.sprite, this.iconoBase));
@@ -135,7 +190,7 @@ export class SceneOne extends Scene {
                     fill: 'white'
                 });
     }
-    
+
     /* borderHit() {
     
      }*/
