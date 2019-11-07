@@ -63,10 +63,10 @@ export class Jeep {
 
   loadImages() {
     this.assets.images.forEach((item) => {
-      let key =  this.images[item.direction];  
+      let key =  item.id;  
       let url = `${this.assets.images_dir}${item.src}`;
       this.scene.load(key, url);
-      this.images[id] = this.scene.textures.get(key); 
+      this.images[key] = this.scene.textures.get(key); 
     }
   }
 

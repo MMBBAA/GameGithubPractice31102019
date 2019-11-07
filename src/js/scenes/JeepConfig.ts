@@ -1,29 +1,29 @@
-export const AssetsConfig = {
+export const JeepConfig = {
     images_dir: '../../../assets/images/',
     images: [
       {
-        id: 'Up',
+        id: 'jeep_up',
         direction: 'up',
         obj: 'jeep',
         src: 'jeepUp.png'
       },
 
       {
-        id: 'Down',  
+        id: 'jeep_down',  
         direction: 'down',
         obj: 'jeep',
         src: 'jeepDown.png'
       },
 
       {
-        id: 'Left',  
+        id: 'jeep_left',  
         direction: 'left',
         obj: 'jeep',
         src: 'jeepLeft.png'
       },
 
       {
-        id: 'Right',
+        id: 'jeep_right',
         direction: 'right',
         obj: 'jeep',
         src: 'jeepRight.png'

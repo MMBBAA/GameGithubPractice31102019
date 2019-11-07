@@ -15,7 +15,7 @@
 	"typescript": "^3.7.2"
     },
     "scripts": {
-	"start": "node server.js",
+    "start": "node server.js",
 	"prestart": "parcel build index.html",
 	"dev": "npx parcel index.html --open"
     },

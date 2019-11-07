@@ -1,7 +1,6 @@
 import { Scene, Physics, Input, Cameras } from 'phaser';
-//import { Jeep } from '../Jeep';
 import { Jeep2 } from '../Jeep2';
-import { AssetsConfig } from './Assets';
+import { JeepConfig } from './JeepConfig';
 
 export class SceneOne extends Scene {
     iconobase: Phaser.GameObjects.Image | undefined;
@@ -21,13 +20,11 @@ export class SceneOne extends Scene {
             key: 'SceneOne'
         })
         this.scene = this;
-        this.jeep = new Jeep2(this, 400, 300);
-        this.jeep2 = new Jeep2(this, 40, 120);
     }
 
     preload() {
-        this.jeep.preloadImages(this, AssetsConfig.images )
-
+        this.jeep = new Jeep2(this, 400, 300, JeepConfig);
+        this.jeep2 = new Jeep2(this, 40, 120, JeepConfig);
 
         this.loadImagesFunction();
         this.loadSoundsFunction();
@@ -36,10 +33,10 @@ export class SceneOne extends Scene {
     create() {
         this.iconoBase = this.physics.add.sprite(400, 300, 'base');
 
-        this.jeep.sprite = this.physics.add.sprite(this.jeep.x, this.jeep.y, 'jeepRight');
+        this.jeep.sprite = this.physics.add.sprite(this.jeep.x, this.jeep.y, 'jeep_right');
         this.jeep.sprite.setScale(0.15);
 
-        this.jeep2.sprite = this.physics.add.sprite(this.jeep2.x, this.jeep2.y, 'jeepRight');
+        this.jeep2.sprite = this.physics.add.sprite(this.jeep2.x, this.jeep2.y, 'jeep_right');
         this.jeep2.sprite.setScale(0.15);
         this.keysSetup();
         this.collisionSetup();
@@ -62,7 +59,6 @@ export class SceneOne extends Scene {
         camera.setViewport(150, 150, 300, 300);
         camera.startFollow(this.jeep.sprite);
     }
-
 
     keysSetup() {
         this.key_A = this.input.keyboard.addKey(Input.Keyboard.KeyCodes.A);
@@ -141,15 +137,8 @@ export class SceneOne extends Scene {
                     fill: 'white'
                 });
     }
-    //mensaje de colisión con bordes de pantalla
+    
     /* borderHit() {
-         this.add.text(
-             16,
-             16,
-             'border Colission',
-             {
-                 fontSize: '32px',
-                 fill: 'green'
-             });
+    
      }*/
 }

@@ -12,17 +12,30 @@ export class Jeep2 {
     sprite: GameObjects.Sprite
     bateria: number;
     bateriaInicial: number = 1000;
-    direction: any;
+    initialDirection: string = 'right';
+    direction: string;
     currentImage: any;
-    images: any;
-    fatalFailure: any;
+    imageTextures : Array<any> = [];
+    fatalFailure: boolean = false;
+    speed: number = 10;
 
-    constructor(scene: Scene, x: number, y: number) {
+    constructor(scene: Scene, x: number, y: number, config) {
         this.scene = scene;
         this.initialX = x;
         this.initialY = y;
+        this.config = config;
+        this.preloadImages();
         this.reset();
-        this.createMessageBox();
+    }
+    
+    preloadImages() {
+        this.config.images.forEach((imagen) => {
+            let dir = this.config.images_dir;
+            let url = `${dir}${imagen.src}`;
+            let key = imagen.id;
+            this.scene.load.image(key, url);
+            this.imageTextures[imagen.direction] =  this.scene.textures.get(key);
+        });
     }
 
 
@@ -31,35 +44,16 @@ export class Jeep2 {
         this.x = this.initialX;
         this.y = this.initialY;
         this.bateria = this.bateriaInicial;
-    }
-    //función message
-    createMessageBox(msg = '', x = 16, y = 16) {
-        this.messageBox =
-            this.scene.add.text(
-                x,
-                y,
-                msg,
-                {
-                    fontSize: '20px',
-                    fill: 'red'
-                });
+        this.setDirection(this.initialDirection);
     }
 
-    preloadImages(scene, imagenes) {
-
-        imagenes.forEach((imagen) => {
-            let url: string = `${AssetsConfig.images_dir}${imagen.src}`;
-            let key: string = `jeep${imagen.id}`;
-            scene.load.image(key, url);
-        }, scene);
-    }
 
     //función displayCoordinates
     displayCoordinates() {
         this.message(`move to ${this.x} and ${this.y}`);
     }
     message(msg = '') {
-        this.messageBox.setText(msg);
+        // this.scene.message(msg);
     }
     updateXYPhaser() {
         this.sprite.x = this.x;
@@ -68,13 +62,20 @@ export class Jeep2 {
 
     setDirection(direction: string) {
         this.direction = direction;
-        this.currentImage = this.images[direction];
+        this.setSprite(direction)
     }
 
-    _move(direction: string, x = this.x, y = this.y) {
+    setSprite(key) {
+        this.currentImage = this.imageTextures[key];
+        if (this.sprite) {
+            this.sprite.setTexture(`jeep_${key}`);
+        }
+    }
+
+    _move(direction: string, dx = 1, dy = 1) {
         if (!this.fatalFailure) {
-            this.x = x;
-            this.y = y;
+            this.x = this.x + (dx * this.speed);
+            this.y = this.y + (dy * this.speed);
             //this.playSound('Jeep');
             this.setDirection(direction);
             // this.playSound('Freno');
@@ -84,20 +85,20 @@ export class Jeep2 {
 
 
 
-    moveRight(x = this.x) {
-        this._move("right", x, this.y);
+    moveRight(dx = 1) {
+        this._move("right", dx, 0);
     }
 
-    moveLeft(x = this.x) {
-        this._move("left", x, this.y);
+    moveLeft(dx = -1) {
+        this._move("left", dx, 0);
     }
 
-    moveUp(y = this.y) {
-        this._move("up", this.x, y);
+    moveUp(dy = -1) {
+        this._move("up", 0, dy);
     }
 
-    moveDown(y = this.y) {
-        this._move("down", this.x, y);
+    moveDown(dy = 1) {
+        this._move("down", 0, dy);
     }
 
 }
