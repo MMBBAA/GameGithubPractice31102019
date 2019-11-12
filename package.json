@@ -16,7 +16,7 @@
     },
     "scripts": {
     "start": "node server.js",
-	"prestart": "parcel build index.html",
+	"prestart": "parcel build index.hml",
 	"dev": "npx parcel index.html --host 192.168.1.54 --port 8080 --open "
     },
     "keywords": [],
