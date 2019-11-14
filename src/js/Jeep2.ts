@@ -1,32 +1,36 @@
 import { Physics, Scene, GameObjects } from 'phaser';
 
-
 export class Jeep2 {
 
     initialX: number
     initialY: number
     scene: Scene
     messageBox
-    sprite:  Physics.Arcade.Sprite
+    sprite: Physics.Arcade.Sprite
     bateria: number;
-    bateriaInicial: number = 1000;
+    bateriaInicial: number = 100 // 1000;
+    bateriaBajoNivel = 50;  // 100
     initialDirection: string = 'right';
     direction: string;
     currentImage: any;
     imageTextures: Array<any> = [];
+    sounds: Array<any> = [];
     fatalFailure: boolean = false;
     speed: number = 10;
+    engineRunning: boolean = false;
 
     constructor(scene: Scene, x: number, y: number, config) {
         this.scene = scene;
         this.initialX = x;
-        this.initialY = y;
         this.config = config;
+        this.initialY = y;
         this.preloadImages();
+        this.preloadAudios();
         this.reset();
     }
 
     preloadImages() {
+
         this.config.images.forEach((imagen) => {
             let dir = this.config.images_dir;
             let url = `${dir}${imagen.src}`;
@@ -36,49 +40,35 @@ export class Jeep2 {
         });
     }
 
+    preloadAudios() {
+        this.config.audio.forEach((audio) => {
+            let dir = this.config.audio_dir;
+            let url = `${dir}${audio.src}`;
+            let key = audio.id;
+            this.scene.load.audio(key, [url]);
+            this.sounds[key] = this.scene.sound.add(key, audio.options); 
+        });
+    }
 
-    //creacion de un metodo
     reset() {
-       if (this.sprite) {
-        this.sprite.x = this.initialX;
-        this.sprite.y = this.initialY;
-       }
+        if (this.sprite) {
+            this.sprite.x = this.initialX;
+            this.sprite.y = this.initialY;
+        }
         this.bateria = this.bateriaInicial;
         this.setDirection(this.initialDirection);
     }
 
-
-    //función displayCoordinates
     displayCoordinates() {
         this.message(`move to ${this.sprite.x} and ${this.sprite.y}`);
     }
     message(msg = '') {
         // this.scene.message(msg);
     }
- 
 
     setDirection(direction: string) {
         this.direction = direction;
-
-        // switch (direction) {
-        //     case 'up':
-        //         this.sprite.angle = 0;
-        //         break;
-
-        //     case 'down':
-        //         this.sprite.angle = 90
-        //         break;
-        //     case 'left':
-        //         this.sprite.angle = 180
-        //         break;
-        //     case 'right':
-
-        //         this.sprite.angle = 270
-        //         break;
-        //     default:
-        //         break;
-        // }
-         this.setSprite(direction)
+        this.setSprite(direction)
     }
 
     setSprite(key) {
@@ -89,17 +79,16 @@ export class Jeep2 {
     }
 
     _move(direction: string, dx = 1, dy = 1) {
+        this.arranque();
         if (!this.fatalFailure) {
             this.sprite.x = this.sprite.x + (dx * this.speed);
             this.sprite.y = this.sprite.y + (dy * this.speed);
-            //this.playSound('Jeep');
+            
             this.setDirection(direction);
             // this.playSound('Freno');
             this.bateria--;
         }
     }
-
-
 
     moveRight(dx = 1) {
         this._move("right", dx, 0);
@@ -117,4 +106,17 @@ export class Jeep2 {
         this._move("down", 0, dy);
     }
 
+    playSound(soundID) {
+        this.scene.sound.play(soundID);
+    //  console.table(this.sounds);
+      //this.sounds[soundID] && this.sounds[soundID].play();
+    }
+
+    arranque() {
+        if(!this.engineRunning){
+          //  this.playSound('Jeep');
+            this.engineRunning=true;
+        this.playSound('Arranque');
+        }
+    }
 }

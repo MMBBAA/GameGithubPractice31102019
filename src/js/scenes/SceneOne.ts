@@ -15,18 +15,17 @@ export class SceneOne extends Scene {
     iconoBase: Phaser.GameObjects.Sprite;
     onBase: boolean = true;
     messageBox: Phaser.GameObjects.Text;
+    bgImg: Phaser.GameObjects.Sprite;
 
     constructor() {
         super({
             key: 'SceneOne'
         })
-        this.scene = this;
     }
-    
+
 
     preload() {
         this.jeep1 = new Jeep2(this, 400, 300, JeepConfig);
-
         this.loadImagesFunction();
     }
 
@@ -34,27 +33,25 @@ export class SceneOne extends Scene {
         this.bgImg = this.add.sprite(0, 0, 'bg');
         this.bgImg.setScale(2);
         this.iconoBase = this.physics.add.sprite(400, 300, 'base');
-        
-        this.jeep1.sprite = this.physics.add.sprite(this.jeep1.initialX, this.jeep1.initialY, 'jeep_right');
+
+        this.jeep1.sprite = this.physics.add.sprite(
+            this.jeep1.initialX,
+            this.jeep1.initialY,
+            'jeep_right');
         this.jeep1.sprite.setScale(0.15);
 
         this.keysSetup();
         this.collisionListenerBetweenBaseAndJeep();
         this.messageBoxSetup();
         this.worldSetup();
-        // this.setupMouse();
         this.cameraSetup();
 
         this.jeep1.sprite.setCollideWorldBounds(true);
     }
 
-    setupMouse() {
-        // Convert the mouse position to world position within the camera
-        const worldPoint = this.input.activePointer.positionToCamera(this.cameras.main);
-    }
-
     mouseCheck() {
         const pointer = this.input.activePointer;
+        // Convert the mouse position to world position within the camera
         const worldPoint = pointer.positionToCamera(this.cameras.main);
         if (pointer.isDown) {
             this.message(`Mouse clicked at ${worldPoint.x} ${worldPoint.y}`);
@@ -80,7 +77,7 @@ export class SceneOne extends Scene {
 
         // make camera follow jeep    
         this.camera.startFollow(this.jeep1.sprite);
-            
+
     }
 
     keysSetup() {
@@ -111,12 +108,11 @@ export class SceneOne extends Scene {
     }
 
     playerHit() {
-        this.message(`Jeep colission in ${this.jeep1.x} and ${this.jeep1.y}`);
-
+        this.message(`Jeep colission in ${this.jeep1.sprite.x} and ${this.jeep1.sprite.y}`);
     }
 
     baseHit() {
-        this.message(`Base colission in ${this.jeep1.x} and ${this.jeep1.y}`);
+        this.message(`Base colission in ${this.jeep1.sprite.x} and ${this.jeep1.sprite.y}`);
     }
 
     message(msg = '') {
@@ -134,5 +130,4 @@ export class SceneOne extends Scene {
                     fill: 'white'
                 });
     }
-
 }
