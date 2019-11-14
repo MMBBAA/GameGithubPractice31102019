@@ -5,7 +5,9 @@ import { JeepConfig } from './JeepConfig';
 export class SceneOne extends Scene {
     iconobase: Phaser.GameObjects.Image | undefined;
 
-    jeep: Jeep2;
+    planetMarsWidth: number = 800;
+    planetMarsHeight: number = 600;
+    jeep1: Jeep2;
     jeep2: Jeep2;
     key_W: Input.Keyboard.Key;
     key_D: Input.Keyboard.Key;
@@ -23,40 +25,33 @@ export class SceneOne extends Scene {
     }
 
     preload() {
-        this.jeep = new Jeep2(this, 400, 300, JeepConfig);
+        this.jeep1 = new Jeep2(this, 400, 300, JeepConfig);
         this.jeep2 = new Jeep2(this, 40, 120, JeepConfig);
 
         this.loadImagesFunction();
-        this.loadSoundsFunction();
     }
 
     create() {
+        this.bgImg = this.physics.add.sprite(0, 0, 'bg');
+        this.bgImg.setScale(2);
         this.iconoBase = this.physics.add.sprite(400, 300, 'base');
+        
+        this.jeep1.sprite = this.physics.add.sprite(this.jeep1.initialX, this.jeep1.initialY, 'jeep_right');
+        this.jeep1.sprite.setScale(0.15);
 
-        this.jeep.sprite = this.physics.add.sprite(this.jeep.initialX, this.jeep.initialY, 'jeep_right');
-        this.jeep.sprite.setScale(0.15);
-
-        this.jeep2.sprite = this.physics.add.sprite(this.jeep2.initialX, this.jeep2.initialY, 'jeep_right');
-        this.jeep2.sprite.setScale(0.15);
+        //  this.jeep2.sprite = this.physics.add.sprite(this.jeep2.initialX, this.jeep2.initialY, 'jeep_right');
+        // this.jeep2.sprite.setScale(0.15);
+        
+        
         this.keysSetup();
-        this.collisionSetup();
-        this.collisionBaseAndJeepSetup();
+        this.collisionListenerBetweenJeep1AndJeep2();
+        this.collisionListenerBetweenBaseAndJeep();
         this.messageBoxSetup();
+        this.worldSetup();
         // this.setupMouse();
-        // this.cameraSetup();
+        this.cameraSetup();
 
-
-        this.physics.world.setBounds(0, 0, 800 + 300, 600 + 200);
-        this.physics.world.setBoundsCollision(true);
-        this.camera = this.cameras.main;
-        this.camera.setBounds(0, 0, 800 + 300, 600 + 200)
-        this.camera.startFollow(this.jeep.sprite);
-        this.controls = new Phaser.Cameras.Controls.FixedKeyControl(
-            {
-
-                camera: this.cameras.main,
-            })
-        this.jeep.sprite.setCollideWorldBounds(true);
+        this.jeep1.sprite.setCollideWorldBounds(true);
     }
 
 
@@ -75,32 +70,24 @@ export class SceneOne extends Scene {
 
     loadImagesFunction() {
         this.load.image('base', '../../../assets/images/iconobase.png');
+        this.load.image('bg', '../../../assets/images/suelo2.jpg');
     }
 
-    loadSoundsFunction() { }
+    worldSetup() {
+        // create an invisible rectangle, that deines edges of the world
+        this.physics.world.setBounds(0, 0, this.planetMarsWidth, this.planetMarsHeight);
+        // Enables or disables collisions on each edge of the World boundary.
+        this.physics.world.setBoundsCollision(true);
+    }
 
     cameraSetup() {
-        // const camera = this.cameras.main;
-        // camera.setViewport(150, 150, 300, 300);
+        this.camera = this.cameras.main;
+        // Camera can move to bounds of world
+        this.camera.setBounds(0, 0, this.planetMarsWidth, this.planetMarsHeight)
 
-        // Phaser supports multiple cameras, but you can access the default camera like this:
-
-        // Constrain the camera so that it isn't allowed to move outside the width/height of tilemap
-        // this.camera.setBounds(0, 0, this.sys.scale.width, this.sys.scale.height);
-
-        const cursors = this.input.keyboard.createCursorKeys();
-        const controlConfig = {
-            camera: this.cameras.main,
-            left: cursors.left,
-            right: cursors.right,
-            up: cursors.up,
-            down: cursors.down,
-            speed: 0.5
-        };
-        this.controls = new Phaser.Cameras.Controls.FixedKeyControl(controlConfig);
-
-        // Limit the camera to the map size
-        // this.cameras.main.setBounds(0, 0, this.sys.scale.width, this.sys.scale.height);
+        // make camera follow jeep    
+        this.camera.startFollow(this.jeep1.sprite);
+            
     }
 
     keysSetup() {
@@ -111,74 +98,47 @@ export class SceneOne extends Scene {
     }
 
     keysListener() {
-        if (this.key_D.isDown) this.jeep.moveRight();
-        if (this.key_A.isDown) this.jeep.moveLeft();
-        if (this.key_S.isDown) this.jeep.moveDown();
-        if (this.key_W.isDown) this.jeep.moveUp();
+        if (this.key_D.isDown) this.jeep1.moveRight();
+        if (this.key_A.isDown) this.jeep1.moveLeft();
+        if (this.key_S.isDown) this.jeep1.moveDown();
+        if (this.key_W.isDown) this.jeep1.moveUp();
     }
+
     update(delta, time) {
-        this.controls.update(delta);
-        // this.cameraSetup();
         this.keysListener();
-        this.jeep.displayCoordinates();
-        //this.cameras.main.scrollX = this.jeep2.sprite.x;
-        // this.cameras.main.scrollY = this.jeep2.sprite.y;
-        // this.camera.main.world.setScroll(this.jeep.x, this.jeep.y)
-        // this.cameras.main.worldView.centerX = this.jeep.x; 
-        // this.cameras.main.setScroll(this.jeep.x, this.jeep.y)
-        // this.cameras.main.startFollow(this.jeep.sprite);
-        const collision = this.physics.collide(
-            this.jeep.sprite,
-            this.iconoBase);
-
-        this.physics.world.on('worldbounds',
-            (body, blockedUp, blockedDown, blockedLeft, blockedRight) => {
-                alert('hit a wall')
-            });
-        // console.log(`collision: ${collision}`);
-
-        // if (!collision) {
-        //     this.baseHit = false
-
-        // } else {
-        //     this.baseHit = true
-        // }
-
-
-        // console.log(this.physics.world.overlap(this.jeep.sprite, this.iconoBase));
-
     }
-    collisionSetup() {
+
+    collisionListenerBetweenJeep1AndJeep2() {
         this.physics.add.collider(
-            this.jeep.sprite,
+            this.jeep1.sprite,
             this.jeep2.sprite,
             this.playerHit,
             null,
             this);
     }
-    //colision de la base y el jeep
 
-    collisionBaseAndJeepSetup() {
-
+    collisionListenerBetweenBaseAndJeep() {
         this.physics.add.collider(
             this.iconoBase,
-            this.jeep.sprite,
+            this.jeep1.sprite,
             this.baseHit,
             null,
             this);
     }
 
     playerHit() {
-        this.message(`Jeep colission in ${this.jeep.x} and ${this.jeep.y}`);
+        this.message(`Jeep colission in ${this.jeep1.x} and ${this.jeep1.y}`);
 
     }
+
     baseHit() {
-        this.message(`Base colission in ${this.jeep.x} and ${this.jeep.y}`);
+        this.message(`Base colission in ${this.jeep1.x} and ${this.jeep1.y}`);
     }
+
     message(msg = '') {
         this.messageBox.setText(msg);
     }
-    //pantalla de mensaje
+
     messageBoxSetup(msg = '', x = 50, y = 50) {
         this.messageBox =
             this.add.text(
@@ -191,7 +151,4 @@ export class SceneOne extends Scene {
                 });
     }
 
-    /* borderHit() {
-    
-     }*/
 }
