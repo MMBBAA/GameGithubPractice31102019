@@ -8,7 +8,6 @@ export class SceneOne extends Scene {
     planetMarsWidth: number = 800;
     planetMarsHeight: number = 600;
     jeep1: Jeep2;
-    jeep2: Jeep2;
     key_W: Input.Keyboard.Key;
     key_D: Input.Keyboard.Key;
     key_A: Input.Keyboard.Key;
@@ -23,28 +22,23 @@ export class SceneOne extends Scene {
         })
         this.scene = this;
     }
+    
 
     preload() {
         this.jeep1 = new Jeep2(this, 400, 300, JeepConfig);
-        this.jeep2 = new Jeep2(this, 40, 120, JeepConfig);
 
         this.loadImagesFunction();
     }
 
     create() {
-        this.bgImg = this.physics.add.sprite(0, 0, 'bg');
+        this.bgImg = this.add.sprite(0, 0, 'bg');
         this.bgImg.setScale(2);
         this.iconoBase = this.physics.add.sprite(400, 300, 'base');
         
         this.jeep1.sprite = this.physics.add.sprite(this.jeep1.initialX, this.jeep1.initialY, 'jeep_right');
         this.jeep1.sprite.setScale(0.15);
 
-        //  this.jeep2.sprite = this.physics.add.sprite(this.jeep2.initialX, this.jeep2.initialY, 'jeep_right');
-        // this.jeep2.sprite.setScale(0.15);
-        
-        
         this.keysSetup();
-        this.collisionListenerBetweenJeep1AndJeep2();
         this.collisionListenerBetweenBaseAndJeep();
         this.messageBoxSetup();
         this.worldSetup();
@@ -53,7 +47,6 @@ export class SceneOne extends Scene {
 
         this.jeep1.sprite.setCollideWorldBounds(true);
     }
-
 
     setupMouse() {
         // Convert the mouse position to world position within the camera
@@ -106,15 +99,6 @@ export class SceneOne extends Scene {
 
     update(delta, time) {
         this.keysListener();
-    }
-
-    collisionListenerBetweenJeep1AndJeep2() {
-        this.physics.add.collider(
-            this.jeep1.sprite,
-            this.jeep2.sprite,
-            this.playerHit,
-            null,
-            this);
     }
 
     collisionListenerBetweenBaseAndJeep() {
