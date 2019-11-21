@@ -5,8 +5,8 @@ import { JeepConfig } from './JeepConfig';
 export class SceneOne extends Scene {
     iconobase: Phaser.GameObjects.Image | undefined;
 
-    planetMarsWidth: number = 800;
-    planetMarsHeight: number = 600;
+    planetMarsWidth: number = 890;
+    planetMarsHeight: number = 590;
     jeep1: Jeep2;
     key_W: Input.Keyboard.Key;
     key_D: Input.Keyboard.Key;
@@ -33,7 +33,12 @@ export class SceneOne extends Scene {
     create() {
         this.jeep1.addAudios();
         this.bgImg = this.add.sprite(0, 0, 'bg');
-        this.bgImg.setScale(2);
+        this.bgImg.setOrigin(0, 0);
+        // this.bgImg.setScale(1.1);
+       // this.bgImg.displayHeight = 590;
+       // this.bgImg.displayWidth = 890;
+        
+        //this.bgImg.setScale(2);
         this.iconoBase = this.physics.add.sprite(400, 300, 'base');
 
         this.jeep1.sprite = this.physics.add.sprite(

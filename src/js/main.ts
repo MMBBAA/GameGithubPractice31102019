@@ -3,8 +3,8 @@ import { SceneOne } from './scenes/SceneOne';
 
 const mySettings = {
     type: AUTO,
-    width: 800,
-    height: 600,
+    width: 890,
+    height: 590,
     scale:
     {
         mode: Scale.FIT,
