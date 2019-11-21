@@ -35,27 +35,42 @@ export const JeepConfig = {
     {
       id: 'Jeep',
       src: 'Jeep_En_Marcha_3.mp3',
-      type: 'jeep'
+      type: 'jeep',
+      options: {
+        //volume: 0.7,
+        loop: true
+      }
     },
     {
       id: 'Arranque',
       src: 'Jeep_Arrancando.mp3',
       type: 'jeep',
       options: {
-         // volume: 0.7,
-         // loop: false
+        // volume: 0.7,
+        // loop: false
       }
     },
     {
       id: 'Freno',
       src: 'Jeep_Frenando.mp3',
-      type: 'jeep'
+      type: 'jeep',
+      options: {
+        loop: false
+      }
     },
     {
       id: 'BateriaBaja',
       src: 'Bateria_Baja.mp3',
-      type: 'jeep'
-    },
+      type: 'jeep',
+      options: {
+        mute: false,
+        volume: 1,
+        rate: 1,
+        detune: 0,
+        seek: 0,
+        delay: 0,
+        loop: true
+      },
     {
       id: 'RecargaEnergia',
       src: 'Recarga_Energia.mp3',

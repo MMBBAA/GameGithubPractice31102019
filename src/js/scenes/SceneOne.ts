@@ -10,12 +10,14 @@ export class SceneOne extends Scene {
     jeep1: Jeep2;
     key_W: Input.Keyboard.Key;
     key_D: Input.Keyboard.Key;
-    key_A: Input.Keyboard.Key;
+    key_A: Input.Keyboard.Key;  
     key_S: Input.Keyboard.Key;
+    key_SPACE: Input.Keyboard.Key;
     iconoBase: Phaser.GameObjects.Sprite;
     onBase: boolean = true;
     messageBox: Phaser.GameObjects.Text;
     bgImg: Phaser.GameObjects.Sprite;
+    
 
     constructor() {
         super({
@@ -23,13 +25,13 @@ export class SceneOne extends Scene {
         })
     }
 
-
     preload() {
         this.jeep1 = new Jeep2(this, 400, 300, JeepConfig);
         this.loadImagesFunction();
     }
 
     create() {
+        this.jeep1.addAudios();
         this.bgImg = this.add.sprite(0, 0, 'bg');
         this.bgImg.setScale(2);
         this.iconoBase = this.physics.add.sprite(400, 300, 'base');
@@ -85,6 +87,7 @@ export class SceneOne extends Scene {
         this.key_W = this.input.keyboard.addKey(Input.Keyboard.KeyCodes.W);
         this.key_S = this.input.keyboard.addKey(Input.Keyboard.KeyCodes.S);
         this.key_D = this.input.keyboard.addKey(Input.Keyboard.KeyCodes.D);
+        this.key_SPACE = this.input.keyboard.addKey(Input.Keyboard.KeyCodes.SPACE);
     }
 
     keysListener() {
@@ -92,10 +95,15 @@ export class SceneOne extends Scene {
         if (this.key_A.isDown) this.jeep1.moveLeft();
         if (this.key_S.isDown) this.jeep1.moveDown();
         if (this.key_W.isDown) this.jeep1.moveUp();
+        if (this.key_SPACE.isDown) this.jeep1.brake();
+        if (this.key_D.isUp && this.key_A.isUp && this.key_S.isUp 
+            && this.key_W.isUp) this.jeep1.stop();
     }
 
     update(delta, time) {
+
         this.keysListener();
+        this.jeep1.update();
     }
 
     collisionListenerBetweenBaseAndJeep() {

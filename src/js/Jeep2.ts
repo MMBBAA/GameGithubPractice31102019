@@ -1,5 +1,6 @@
 import { Physics, Scene, GameObjects } from 'phaser';
 
+
 export class Jeep2 {
 
     initialX: number
@@ -18,6 +19,8 @@ export class Jeep2 {
     fatalFailure: boolean = false;
     speed: number = 10;
     engineRunning: boolean = false;
+    batteryWarningOn: boolean = false;
+    config: any;
 
     constructor(scene: Scene, x: number, y: number, config) {
         this.scene = scene;
@@ -46,7 +49,18 @@ export class Jeep2 {
             let url = `${dir}${audio.src}`;
             let key = audio.id;
             this.scene.load.audio(key, [url]);
-            this.sounds[key] = this.scene.sound.add(key, audio.options); 
+            //console.table(audio.options);
+            //this.sounds[key] = this.scene.sound.add(key, audio.options);
+        });
+    }
+        addAudios() {
+        this.config.audio.forEach((audio) => {
+           // let dir = this.config.audio_dir;
+          //  let url = `${dir}${audio.src}`;
+            let key = audio.id;
+         //   this.scene.load.audio(key, [url]);
+         //  console.table(audio.options);
+            this.sounds[key] = this.scene.sound.add(key, audio.options);
         });
     }
 
@@ -83,7 +97,7 @@ export class Jeep2 {
         if (!this.fatalFailure) {
             this.sprite.x = this.sprite.x + (dx * this.speed);
             this.sprite.y = this.sprite.y + (dy * this.speed);
-            
+
             this.setDirection(direction);
             // this.playSound('Freno');
             this.bateria--;
@@ -107,16 +121,86 @@ export class Jeep2 {
     }
 
     playSound(soundID) {
-        this.scene.sound.play(soundID);
-    //  console.table(this.sounds);
-      //this.sounds[soundID] && this.sounds[soundID].play();
+
+        //  let loop = this.config.audio.[soundID].options.loop;
+
+        // this.scene.sound.play(soundID);
+
+        //console.table(this.sounds);
+        // this.sounds[soundID].play && 
+        console.log(soundID);
+        this.sounds[soundID].play();
+        // if (soundID == 'BateriaBaja') {
+        // this.scene.sound.play(soundID);
+            // this.sounds[soundID].loop();
+        //}
     }
 
     arranque() {
-        if(!this.engineRunning){
-          //  this.playSound('Jeep');
-            this.engineRunning=true;
-        this.playSound('Arranque');
+        if (!this.engineRunning) {
+            this.playSound('Jeep');
+            this.engineRunning = true;
+            this.playSound('Arranque');
         }
     }
+
+    stop() {
+
+    }
+
+    break() {
+        this.playSound('Freno');
+    }
+
+    get bateriaAgotado() {
+        return this.bateria <= 0;
+    }
+
+    // informa si la batería está por debajo de 150, se repite continuamente
+    batteryCheck() {
+        //if(!this.batteryWarningOn){}
+        if (this.bateriaAgotado) {
+            this.onDeadBattery();
+            return;
+        }
+        if (!this.batteryWarningOn) {
+
+            if (this.bateria <= this.bateriaBajoNivel) {
+                this.batterLowWarningOn();
+            }
+        }
+    }
+
+    batterLowWarningOn() {
+        this.batteryWarningOn = true;
+        this.playSound('BateriaBaja');
+    }
+
+    batteryLowWarningOff() {
+        this.stopSound('BateriaBaja');
+    }
+
+    onDeadBattery() {
+        if (!this.fatalFailure) {
+            this.playSound('Energia');
+            this.batteryLowWarningOff();
+            this.playSound('Freno');
+            //this.onFailure('dead-battery', true);
+        }
+    }
+
+    stopSound(soundID) {
+        this.sounds[soundID].stop();
+    }
+
+    update() {
+        if (!this.fatalFailure) {
+            // this.shieldCheck();
+            // this.oxigenDecrement();
+            //  this.oxigenCheck();
+            this.batteryCheck();
+        }
+    }
+    
+
 }
