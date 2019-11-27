@@ -23,6 +23,7 @@ export class Jeep2 {
     config: any;
     notMoving: boolean = true;
     notMusic: boolean =false;//probando musica
+    
 
     constructor(scene: Scene, x: number, y: number, config) {
         this.scene = scene;
@@ -170,6 +171,11 @@ export class Jeep2 {
     break() {
         this.playSound('Freno');
     }
+    //recarga de bateria con la letra r
+    rechargeBattery(amount = this.bateriaInicial) {
+        this.bateria = amount;
+        this.playSound('RecargaEnergia');
+      }
 
     get bateriaAgotado() {
         return this.bateria <= 0;

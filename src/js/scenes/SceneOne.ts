@@ -13,12 +13,14 @@ export class SceneOne extends Scene {
     key_D: Input.Keyboard.Key;
     key_A: Input.Keyboard.Key;
     key_S: Input.Keyboard.Key;
+    key_R: Input.Keyboard.Key;//declarada la r
     key_SPACE: Input.Keyboard.Key;
     iconoBase: Phaser.GameObjects.Sprite;
     onBase: boolean = true;
     messageBox: Phaser.GameObjects.Text;
     bgImg: Phaser.GameObjects.Sprite;
     musicIsPlaying: boolean =false;
+    
 
 
 
@@ -105,6 +107,7 @@ export class SceneOne extends Scene {
         this.key_W = this.input.keyboard.addKey(Input.Keyboard.KeyCodes.W);
         this.key_S = this.input.keyboard.addKey(Input.Keyboard.KeyCodes.S);
         this.key_D = this.input.keyboard.addKey(Input.Keyboard.KeyCodes.D);
+        this.key_R = this.input.keyboard.addKey(Input.Keyboard.KeyCodes.R);//añadir recarga
         this.key_SPACE = this.input.keyboard.addKey(Input.Keyboard.KeyCodes.SPACE);
     }
 
@@ -125,6 +128,8 @@ export class SceneOne extends Scene {
             case this.key_M.isDown:
                 this.toggleMusic();
                 break;
+            case this.key_R.isDown:
+                this.jeep1.rechargeBattery();
             default:
                 this.jeep1.onBreak();
                 break;
