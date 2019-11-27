@@ -8,16 +8,19 @@ export class SceneOne extends Scene {
     planetMarsWidth: number = 890;
     planetMarsHeight: number = 590;
     jeep1: Jeep2;
+    key_M: Input.Keyboard.Key;
     key_W: Input.Keyboard.Key;
     key_D: Input.Keyboard.Key;
-    key_A: Input.Keyboard.Key;  
+    key_A: Input.Keyboard.Key;
     key_S: Input.Keyboard.Key;
     key_SPACE: Input.Keyboard.Key;
     iconoBase: Phaser.GameObjects.Sprite;
     onBase: boolean = true;
     messageBox: Phaser.GameObjects.Text;
     bgImg: Phaser.GameObjects.Sprite;
-    
+    musicIsPlaying: boolean =false;
+
+
 
     constructor() {
         super({
@@ -28,16 +31,25 @@ export class SceneOne extends Scene {
     preload() {
         this.jeep1 = new Jeep2(this, 400, 300, JeepConfig);
         this.loadImagesFunction();
+        this.load.audio('musicaFondo', '../../assets/sounds/musica.mp3');
     }
 
     create() {
+    
+    this.bgMusic = this.sound.add('musicaFondo', {
+             volume: 0.5,
+             loop: true,
+            detune: 25
+});
+        this.toggleMusic(true);
+
         this.jeep1.addAudios();
         this.bgImg = this.add.sprite(0, 0, 'bg');
         this.bgImg.setOrigin(0, 0);
         // this.bgImg.setScale(1.1);
-       // this.bgImg.displayHeight = 590;
-       // this.bgImg.displayWidth = 890;
-        
+        // this.bgImg.displayHeight = 590;
+        // this.bgImg.displayWidth = 890;
+
         //this.bgImg.setScale(2);
         this.iconoBase = this.physics.add.sprite(400, 300, 'base');
 
@@ -88,6 +100,7 @@ export class SceneOne extends Scene {
     }
 
     keysSetup() {
+        this.key_M = this.input.keyboard.addKey(Input.Keyboard.KeyCodes.M);
         this.key_A = this.input.keyboard.addKey(Input.Keyboard.KeyCodes.A);
         this.key_W = this.input.keyboard.addKey(Input.Keyboard.KeyCodes.W);
         this.key_S = this.input.keyboard.addKey(Input.Keyboard.KeyCodes.S);
@@ -96,12 +109,29 @@ export class SceneOne extends Scene {
     }
 
     keysListener() {
-        if (this.key_D.isDown) this.jeep1.moveRight();
-        if (this.key_A.isDown) this.jeep1.moveLeft();
-        if (this.key_S.isDown) this.jeep1.moveDown();
-        if (this.key_W.isDown) this.jeep1.moveUp();
+        switch (true) {
+            case this.key_D.isDown:
+                this.jeep1.moveRight();
+                break;
+            case this.key_A.isDown:
+                this.jeep1.moveLeft();
+                break;
+            case this.key_W.isDown:
+                this.jeep1.moveUp();
+                break;
+            case this.key_S.isDown:
+                this.jeep1.moveDown();
+                break;
+            case this.key_M.isDown:
+                this.toggleMusic();
+                break;
+            default:
+                this.jeep1.onBreak();
+                break;
+        }
+
         if (this.key_SPACE.isDown) this.jeep1.brake();
-        if (this.key_D.isUp && this.key_A.isUp && this.key_S.isUp 
+        if (this.key_D.isUp && this.key_A.isUp && this.key_S.isUp
             && this.key_W.isUp) this.jeep1.stop();
     }
 
@@ -109,6 +139,17 @@ export class SceneOne extends Scene {
 
         this.keysListener();
         this.jeep1.update();
+    }
+
+    toggleMusic(forcetrue=false){
+        if(!this.musicIsPlaying||forcetrue){
+            this.bgMusic.play();
+            this.musicIsPlaying = true;
+        }
+        else{
+            this.bgMusic.stop();
+            this.musicIsPlaying = false;
+        }
     }
 
     collisionListenerBetweenBaseAndJeep() {

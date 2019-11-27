@@ -9,7 +9,7 @@ export class Jeep2 {
     messageBox
     sprite: Physics.Arcade.Sprite
     bateria: number;
-    bateriaInicial: number = 100 // 1000;
+    bateriaInicial: number = 200 // 1000;
     bateriaBajoNivel = 50;  // 100
     initialDirection: string = 'right';
     direction: string;
@@ -17,10 +17,12 @@ export class Jeep2 {
     imageTextures: Array<any> = [];
     sounds: Array<any> = [];
     fatalFailure: boolean = false;
-    speed: number = 10;
+    speed: number = 1;
     engineRunning: boolean = false;
     batteryWarningOn: boolean = false;
     config: any;
+    notMoving: boolean = true;
+    notMusic: boolean =false;//probando musica
 
     constructor(scene: Scene, x: number, y: number, config) {
         this.scene = scene;
@@ -53,13 +55,13 @@ export class Jeep2 {
             //this.sounds[key] = this.scene.sound.add(key, audio.options);
         });
     }
-        addAudios() {
+    addAudios() {
         this.config.audio.forEach((audio) => {
-           // let dir = this.config.audio_dir;
-          //  let url = `${dir}${audio.src}`;
+            // let dir = this.config.audio_dir;
+            //  let url = `${dir}${audio.src}`;
             let key = audio.id;
-         //   this.scene.load.audio(key, [url]);
-         //  console.table(audio.options);
+            //   this.scene.load.audio(key, [url]);
+            //  console.table(audio.options);
             this.sounds[key] = this.scene.sound.add(key, audio.options);
         });
     }
@@ -93,14 +95,20 @@ export class Jeep2 {
     }
 
     _move(direction: string, dx = 1, dy = 1) {
-        this.arranque();
         if (!this.fatalFailure) {
-            this.sprite.x = this.sprite.x + (dx * this.speed);
-            this.sprite.y = this.sprite.y + (dy * this.speed);
+            this.notMoving = false;
+            this.arranque();
+            if (!this.fatalFailure) {
+                this.sprite.x = this.sprite.x + (dx * this.speed);
+                this.sprite.y = this.sprite.y + (dy * this.speed);
 
-            this.setDirection(direction);
-            // this.playSound('Freno');
-            this.bateria--;
+                this.setDirection(direction);
+                // this.playSound('Freno');
+                this.bateria--;
+            }
+        }
+        else {
+            this.notMoving = true;
         }
     }
 
@@ -129,10 +137,13 @@ export class Jeep2 {
         //console.table(this.sounds);
         // this.sounds[soundID].play && 
         console.log(soundID);
-        this.sounds[soundID].play();
+        if (this.sounds[soundID].seek === 0) {
+            this.sounds[soundID].play();
+        }
+
         // if (soundID == 'BateriaBaja') {
         // this.scene.sound.play(soundID);
-            // this.sounds[soundID].loop();
+        // this.sounds[soundID].loop();
         //}
     }
 
@@ -148,12 +159,29 @@ export class Jeep2 {
 
     }
 
+    onBreak() {
+        this.notMoving = true;
+
+//            if (this.sounds['Jeep'].seek != 0) {
+               this.sounds['Jeep'].stop();
+        
+    }
+
     break() {
         this.playSound('Freno');
     }
 
     get bateriaAgotado() {
         return this.bateria <= 0;
+    }
+
+    jeepStopCheck() {
+        if (this.notMoving) {
+            this.stopSound('Jeep');
+        }
+        else {
+            this.playSound('Jeep');
+        }
     }
 
     // informa si la batería está por debajo de 150, se repite continuamente
@@ -180,12 +208,25 @@ export class Jeep2 {
         this.stopSound('BateriaBaja');
     }
 
+    shutDown() {
+        // this.shieldLowWarningOff();
+        this.batteryLowWarningOff();
+    }
+    onFailure(data, fatalFailure = false) {
+        if (fatalFailure) {
+            this.fatalFailure = true;
+            this.shutDown();
+        }
+        // this.feedbackHandler('failure', data);
+    }
+
+
     onDeadBattery() {
         if (!this.fatalFailure) {
             this.playSound('Energia');
             this.batteryLowWarningOff();
             this.playSound('Freno');
-            //this.onFailure('dead-battery', true);
+            this.onFailure('dead-battery', true);
         }
     }
 
@@ -199,8 +240,9 @@ export class Jeep2 {
             // this.oxigenDecrement();
             //  this.oxigenCheck();
             this.batteryCheck();
+            this.jeepStopCheck();
         }
     }
-    
+
 
 }
