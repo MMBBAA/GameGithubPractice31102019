@@ -9,8 +9,8 @@ export class Jeep2 {
     messageBox
     sprite: Physics.Arcade.Sprite
     bateria: number;
-    bateriaInicial: number = 200 // 1000;
-    bateriaBajoNivel = 50;  // 100
+    bateriaInicial: number = 1000000;
+    bateriaBajoNivel =  100
     initialDirection: string = 'right';
     direction: string;
     currentImage: any;
@@ -22,7 +22,7 @@ export class Jeep2 {
     batteryWarningOn: boolean = false;
     config: any;
     notMoving: boolean = true;
-    notMusic: boolean =false;//probando musica
+    notMusic: boolean =false;
     
 
     constructor(scene: Scene, x: number, y: number, config) {

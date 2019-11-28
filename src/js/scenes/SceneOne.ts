@@ -1,6 +1,7 @@
 import { Scene, Physics, Input, Cameras } from 'phaser';
 import { Jeep2 } from '../Jeep2';
 import { JeepConfig } from './JeepConfig';
+import { Crater } from '../Crater';
 
 export class SceneOne extends Scene {
     iconobase: Phaser.GameObjects.Image | undefined;
@@ -34,10 +35,12 @@ export class SceneOne extends Scene {
         this.jeep1 = new Jeep2(this, 400, 300, JeepConfig);
         this.loadImagesFunction();
         this.load.audio('musicaFondo', '../../assets/sounds/musica.mp3');
+        this.crater1= new Crater({x:200,y:200,scene:this, width: 300});
+        this.crater1.preload();
     }
 
     create() {
-    
+    this.crater1.draw();
     this.bgMusic = this.sound.add('musicaFondo', {
              volume: 0.5,
              loop: true,
@@ -144,6 +147,8 @@ export class SceneOne extends Scene {
 
         this.keysListener();
         this.jeep1.update();
+        this.crater1.draw();
+        this.crater1.draw2();
     }
 
     toggleMusic(forcetrue=false){
