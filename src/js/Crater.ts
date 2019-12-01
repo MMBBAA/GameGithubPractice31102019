@@ -1,74 +1,75 @@
-import { Geom, GameObjects  } from 'phaser';
+import {  Geom, GameObjects, Scene } from 'phaser';
 
 export class Crater {
     x;
     y;
     width;
     height;
+
     impactSound;
-    scene;
+    scene: Scene;
+    craterImage: any;
 
     constructor(obj) {
-    this.scene=obj.scene;
-    this.x = obj.x;
-	this.y = obj.y;
-	this.width = obj.width;
-	//this.height = obj.height;
+        this.scene = obj.scene;
+        this.x = obj.x;
+        this.y = obj.y;
+        this.width = obj.width;
+        this.height = obj.height;
     }
 
-    preload(){
-        this.impactSound=this.scene.load.audio("craterColission","assets/music/Sonido_Colision_Crater.mp3");
+    preload() {
+        //  this.impactSound = this.scene.load.audio("craterColission", "../../assets/music/Sonido_Colision_Crater.mp3");
     }
-    
+
     collisionHandler(obj = null) {
-	this.impactSound.play();
-	// if (obj) {
-	//     obj.collisiontHandler(this);
-	    // 	    this.jeep.escudos -= 50;
-	    // this.collisionHurricane();
-	    // this.hurricaneImpact();
-	// }
+        this.impactSound.play();
+        // if (obj) {
+        //     obj.collisiontHandler(this);
+        // 	    this.jeep.escudos -= 50;
+        // this.collisionHurricane();
+        // this.hurricaneImpact();
+        // }
     }
-
-    get Tx() {
-	return this.x + this.height;
-    }
-
-    get Ty() {
-	return this.y + this.height;
-    }
-
-    _inRange(x, min, max) {
-	return (x - min) * (x - max) <= 0;
-    }
+    /*
+        get Tx() {
+        return this.x + this.height;
+        }*/
+    /*
+        get Ty() {
+        return this.y + this.height;
+        }*/
+    /*
+        _inRange(x, min, max) {
+        return (x - min) * (x - max) <= 0;
+        }*/
 
     // detector de colisión con el crater
+    /*
     hasCollided(obj) {
 	return this._inRange(obj.x, this.x, this.Tx) ||
 	    this._inRange(obj.y, this.y, this.Ty) ||
 	    this._inRange(obj.Tx, this.x, this.Tx) ||
 	    this._inRange(obj.Ty, this.y, this.Ty);
-    }
+    }*/
+    /*
+        detector(obj) {
+        if (this.hasCollided(obj)) {
+            this.collisionHandler(obj);
+        }
+        }*/
 
-    detector(obj) {
-	if (this.hasCollided(obj)) {
-	    this.collisionHandler(obj);
-	}
-    }
 
-    // do not need to draw anything, just for testing
     draw() {
-        let g = this.scene.add.graphics()
-
-        g.fillStyle(0xf40000, 0.5);
-        g.fillCircle(430, 350 - 200, 60);
-
-      //  graphics.fillCircle(this.x, this.y, this.width);
+   // this.craterImage =  new GameObjects.Zone(this.scene, 370, 80 , 140 , 140);
+var circle = new Phaser.Geom.Circle(50, 50, 25);
+   this.craterImage = this.scene.add.graphics({ fillStyle: { color: 0xff0000 } };
+    this.craterImage.fillCircleShape(circle);
+  this.scene.physics.add.existing(this.craterImage);
     }
-    draw2(){
-        let g = this.scene.add.graphics()
 
-        g.fillStyle(0xf50000, 0.5);
-        g.fillCircle(230, 250 - 200, 50);
+    hi() {
+     /*   alert("hi");
+        console.log('hi');*/
     }
 }

@@ -96,6 +96,11 @@ export class Jeep2 {
     }
 
     _move(direction: string, dx = 1, dy = 1) {
+        if(this.scene.collision===direction){
+            console.log("colision con crater 1");
+        }
+        else{
+         this.scene.collision=null;
         if (!this.fatalFailure) {
             this.notMoving = false;
             this.arranque();
@@ -112,20 +117,21 @@ export class Jeep2 {
             this.notMoving = true;
         }
     }
+}
 
-    moveRight(dx = 1) {
+    moveRight(dx = 2) {
         this._move("right", dx, 0);
     }
 
-    moveLeft(dx = -1) {
+    moveLeft(dx = -2) {
         this._move("left", dx, 0);
     }
 
-    moveUp(dy = -1) {
+    moveUp(dy = -2) {
         this._move("up", 0, dy);
     }
 
-    moveDown(dy = 1) {
+    moveDown(dy = 2) {
         this._move("down", 0, dy);
     }
 
@@ -203,6 +209,9 @@ export class Jeep2 {
                 this.batterLowWarningOn();
             }
         }
+    }
+    collisionWithCrater(){
+       // this.playSound('ImpactoCrater');
     }
 
     batterLowWarningOn() {

@@ -21,6 +21,9 @@ export class SceneOne extends Scene {
     messageBox: Phaser.GameObjects.Text;
     bgImg: Phaser.GameObjects.Sprite;
     musicIsPlaying: boolean =false;
+    crater1: Crater;
+    iconoCrater1: Physics.Arcade.Sprite;
+    collision: string;
     
 
 
@@ -35,12 +38,15 @@ export class SceneOne extends Scene {
         this.jeep1 = new Jeep2(this, 400, 300, JeepConfig);
         this.loadImagesFunction();
         this.load.audio('musicaFondo', '../../assets/sounds/musica.mp3');
-        this.crater1= new Crater({x:200,y:200,scene:this, width: 300});
+        //this.load.audio('craterColission', '../../assets/music/Sonido_Colision_Crater.mp3'); 
+        this.crater1= new Crater({scene:this,x:370,y:80,widht:140,height:140});
         this.crater1.preload();
+        //this.crater2=new Crater({scene:this,x:150,y:400,widht:120,height:120});
     }
 
     create() {
     this.crater1.draw();
+    
     this.bgMusic = this.sound.add('musicaFondo', {
              volume: 0.5,
              loop: true,
@@ -57,7 +63,9 @@ export class SceneOne extends Scene {
 
         //this.bgImg.setScale(2);
         this.iconoBase = this.physics.add.sprite(400, 300, 'base');
-
+        this.iconoCrater1=this.physics.add.sprite(440,150,'invisibleCrater');
+        this.iconoCrater1.displayWidth=120;
+        this.iconoCrater1.displayHeight=120;
         this.jeep1.sprite = this.physics.add.sprite(
             this.jeep1.initialX,
             this.jeep1.initialY,
@@ -66,6 +74,7 @@ export class SceneOne extends Scene {
 
         this.keysSetup();
         this.collisionListenerBetweenBaseAndJeep();
+        this.collisionListenerBetweenCraterAndJeep();
         this.messageBoxSetup();
         this.worldSetup();
         this.cameraSetup();
@@ -85,6 +94,7 @@ export class SceneOne extends Scene {
     loadImagesFunction() {
         this.load.image('base', '../../../assets/images/iconobase.png');
         this.load.image('bg', '../../../assets/images/suelo2.jpg');
+        this.load.image('invisibleCrater','../../../assets/images/enBlanco.png');
     }
 
     worldSetup() {
@@ -148,7 +158,7 @@ export class SceneOne extends Scene {
         this.keysListener();
         this.jeep1.update();
         this.crater1.draw();
-        this.crater1.draw2();
+        //this.crater1.draw2();//probando dibujar
     }
 
     toggleMusic(forcetrue=false){
@@ -170,13 +180,33 @@ export class SceneOne extends Scene {
             null,
             this);
     }
-
+    collisionListenerBetweenCraterAndJeep() {
+        this.physics.add.collider(
+          this.iconoCrater1,
+         this.jeep1.sprite, 
+         this.collisionHit,
+          null,
+           this);
+           
+        //    this.physics.add.collider(
+        // this.crater1.craterImage,
+        //     this.jeep1.sprite,
+        //    this.jeep1.collisionWithCrater,
+        //     null,
+        //     this);
+    }
+    collisionHit(){
+    this.message(`Crater1 colission`);
+    this.collision=this.jeep1.direction;
+}
     playerHit() {
-        this.message(`Jeep colission in ${this.jeep1.sprite.x} and ${this.jeep1.sprite.y}`);
+        //this.message(`Jeep colission in ${this.jeep1.sprite.x} and ${this.jeep1.sprite.y}`);
+        this.message(`Crater1 colission in ${this.jeep1.sprite.x} and ${this.jeep1.sprite.y}`);
     }
 
     baseHit() {
-        this.message(`Base colission in ${this.jeep1.sprite.x} and ${this.jeep1.sprite.y}`);
+        //this.message(`Base colission in ${this.jeep1.sprite.x} and ${this.jeep1.sprite.y}`);
+        this.message(`Crater1 colission in ${this.jeep1.sprite.x} and ${this.jeep1.sprite.y}`);
     }
 
     message(msg = '') {
