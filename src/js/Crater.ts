@@ -62,10 +62,10 @@ export class Crater {
 
     draw() {
    // this.craterImage =  new GameObjects.Zone(this.scene, 370, 80 , 140 , 140);
-var circle = new Phaser.Geom.Circle(50, 50, 25);
+/*var circle = new Phaser.Geom.Circle(50, 50, 25);
    this.craterImage = this.scene.add.graphics({ fillStyle: { color: 0xff0000 } };
     this.craterImage.fillCircleShape(circle);
-  this.scene.physics.add.existing(this.craterImage);
+  this.scene.physics.add.existing(this.craterImage);*/
     }
 
     hi() {
