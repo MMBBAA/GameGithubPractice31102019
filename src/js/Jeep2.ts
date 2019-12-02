@@ -1,16 +1,17 @@
-import { Physics, Scene, GameObjects } from 'phaser';
+import { Physics,GameObjects } from 'phaser';
+import { SceneOne } from './scenes/SceneOne';
 
 
 export class Jeep2 {
 
     initialX: number
     initialY: number
-    scene: Scene
+    scene: SceneOne
     messageBox
     sprite: Physics.Arcade.Sprite
     bateria: number;
     bateriaInicial: number = 1000000;
-    bateriaBajoNivel =  100
+    bateriaBajoNivel = 100
     initialDirection: string = 'right';
     direction: string;
     currentImage: any;
@@ -22,8 +23,13 @@ export class Jeep2 {
     batteryWarningOn: boolean = false;
     config: any;
     notMoving: boolean = true;
-    notMusic: boolean =false;
-    
+    notMusic: boolean = false;
+
+    escudosInitial = 1000;
+    shield = this.escudosInitial;
+    escudosNivelDeAdvertencia = 100;
+    escudosDestruidos = false;
+
 
     constructor(scene: Scene, x: number, y: number, config) {
         this.scene = scene;
@@ -95,29 +101,36 @@ export class Jeep2 {
         }
     }
 
-    _move(direction: string, dx = 1, dy = 1) {
-        if(this.scene.collision===direction){
-            console.log("colision con crater 1");
-        }
-        else{
-         this.scene.collision=null;
-        if (!this.fatalFailure) {
-            this.notMoving = false;
-            this.arranque();
-            if (!this.fatalFailure) {
-                this.sprite.x = this.sprite.x + (dx * this.speed);
-                this.sprite.y = this.sprite.y + (dy * this.speed);
+    onCraterCollision() {
+        this.shield--;
+        this.playSound('ImpactoCrater');
+        
+    }
 
-                this.setDirection(direction);
-                // this.playSound('Freno');
-                this.bateria--;
-            }
+    _move(direction: string, dx = 1, dy = 1) {
+        if (this.scene.collision === direction) {
+            this.onCraterCollision();
+            // console.log("colision con crater 1");
         }
         else {
-            this.notMoving = true;
+            this.scene.collision = null;
+            if (!this.fatalFailure) {
+                this.notMoving = false;
+                this.arranque();
+                if (!this.fatalFailure) {
+                    this.sprite.x = this.sprite.x + (dx * this.speed);
+                    this.sprite.y = this.sprite.y + (dy * this.speed);
+
+                    this.setDirection(direction);
+                    // this.playSound('Freno');
+                    this.bateria--;
+                }
+            }
+            else {
+                this.notMoving = true;
+            }
         }
     }
-}
 
     moveRight(dx = 2) {
         this._move("right", dx, 0);
@@ -169,9 +182,9 @@ export class Jeep2 {
     onBreak() {
         this.notMoving = true;
 
-//            if (this.sounds['Jeep'].seek != 0) {
-               this.sounds['Jeep'].stop();
-        
+        //            if (this.sounds['Jeep'].seek != 0) {
+        this.sounds['Jeep'].stop();
+
     }
 
     break() {
@@ -181,7 +194,7 @@ export class Jeep2 {
     rechargeBattery(amount = this.bateriaInicial) {
         this.bateria = amount;
         this.playSound('RecargaEnergia');
-      }
+    }
 
     get bateriaAgotado() {
         return this.bateria <= 0;
@@ -210,8 +223,8 @@ export class Jeep2 {
             }
         }
     }
-    collisionWithCrater(){
-       // this.playSound('ImpactoCrater');
+    collisionWithCrater() {
+        // this.playSound('ImpactoCrater');
     }
 
     batterLowWarningOn() {
@@ -259,5 +272,49 @@ export class Jeep2 {
         }
     }
 
+    // se produce cuando el jeep recarga escudos en la base
+    shieldReload(playSound = true) {
+        if (playSound) {
+            this.playSound('ShieldReload');
+        }
+        this.shield = this.escudosInitial;
+        this.escudosDestruidos = false;
 
-}
+    }
+
+    get shieldLow() {
+        return this.shield <= this.escudosNivelDeAdvertencia && this.shield > 0;
+    }
+
+    shieldCheck() {
+        if (this.shield == 0) {
+          this.onShieldsExhausted();
+          return;
+        }
+    
+        if (this.shieldLow) {
+          this.shieldLowWarningOn();
+        }
+      }
+
+        shieldLowWarningOn() {
+            this.playSound('EscudosBajos');
+            this.playSound('EscudosBajos2');
+
+        }
+
+        shieldLowWarningOff() {
+            this.stopSound('EscudosBajos');
+            this.stopSound('EscudosBajos2');
+        }
+
+        onShieldsExhausted() {
+            if (!this.fatalFailure) {
+                this.stopSound('EscudosBajos');
+                this.stopSound('EscudosBajos2');
+                this.onFailure('no-shields', true);
+            }
+        }
+
+
+    }
