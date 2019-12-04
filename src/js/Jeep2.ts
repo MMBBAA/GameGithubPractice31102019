@@ -3,6 +3,9 @@ import { SceneOne } from './scenes/SceneOne';
 
 
 export class Jeep2 {
+  
+        
+    
 
     initialX: number
     initialY: number
@@ -10,7 +13,7 @@ export class Jeep2 {
     messageBox
     sprite: Physics.Arcade.Sprite
     bateria: number;
-    bateriaInicial: number = 1000000;
+    bateriaInicial: number = 1000;
     bateriaBajoNivel = 100
     initialDirection: string = 'right';
     direction: string;
@@ -25,7 +28,7 @@ export class Jeep2 {
     notMoving: boolean = true;
     notMusic: boolean = false;
 
-    escudosInitial = 1000;
+    escudosInitial = 100;//1000
     shield = this.escudosInitial;
     escudosNivelDeAdvertencia = 100;
     escudosDestruidos = false;
@@ -41,6 +44,15 @@ export class Jeep2 {
         this.reset();
     }
 
+    repairShield(){
+        if(this.shield<1000){
+        this.shield++;
+        this.playSound('ShieldReload');   
+        }else{
+            this.shield=1000;
+        }
+      
+    }
     preloadImages() {
 
         this.config.images.forEach((imagen) => {
@@ -102,9 +114,12 @@ export class Jeep2 {
     }
 
     onCraterCollision() {
+       if(this.shield>0){
         this.shield--;
         this.playSound('ImpactoCrater');
-        
+       }else{
+            this.shield=0;
+        }
     }
 
     _move(direction: string, dx = 1, dy = 1) {
@@ -192,6 +207,7 @@ export class Jeep2 {
     }
     //recarga de bateria con la letra r
     rechargeBattery(amount = this.bateriaInicial) {
+        
         this.bateria = amount;
         this.playSound('RecargaEnergia');
     }
@@ -269,6 +285,8 @@ export class Jeep2 {
             //  this.oxigenCheck();
             this.batteryCheck();
             this.jeepStopCheck();
+            this.scene.display.updateShieldMessage(this.shield);
+            this.scene.display.updateEnergyMessage(this.bateria);
         }
     }
 

@@ -2,6 +2,7 @@ import { Scene, Physics, Input, Cameras } from 'phaser';
 import { Jeep2 } from '../Jeep2';
 import { JeepConfig } from './JeepConfig';
 import { Crater } from '../Crater';
+import { Display } from '../Display';
 
 export class SceneOne extends Scene {
     iconobase: Phaser.GameObjects.Image | undefined;
@@ -30,6 +31,7 @@ export class SceneOne extends Scene {
     iconoCrater3: Physics.Arcade.Sprite;
     iconoCrater4: Physics.Arcade.Sprite;
     collision: string;
+    display: Display;
 
 
 
@@ -38,6 +40,7 @@ export class SceneOne extends Scene {
         super({
             key: 'SceneOne'
         })
+        this.display=new Display({scene:this});
     }
 
     preload() {
@@ -98,7 +101,8 @@ export class SceneOne extends Scene {
         this.keysSetup();
         this.collisionListenerBetweenBaseAndJeep();
         this.collisionListenerBetweenCraterAndJeep();
-        this.messageBoxSetup();
+      //  this.display.messageBoxSetup();
+        this.display.create();
         this.worldSetup();
         this.cameraSetup();
 
@@ -240,20 +244,25 @@ export class SceneOne extends Scene {
         //     this);
     }
     collisionHit() {
-        this.message(`Crater1 colission`);
+       
+        this.display.message(`Crater1 colission`);
         this.collision = this.jeep1.direction;
     }
     playerHit() {//probando para colision con crater1
-        //this.message(`Jeep colission in ${this.jeep1.sprite.x} and ${this.jeep1.sprite.y}`);
-        this.message(`Crater colission in ${this.jeep1.sprite.x} and ${this.jeep1.sprite.y}`);
+        
+        this.display.message(`Crater colission in ${this.jeep1.sprite.x} and ${this.jeep1.sprite.y}`);
+        
     }
 
+    
     baseHit() {
-        //this.message(`Base colission in ${this.jeep1.sprite.x} and ${this.jeep1.sprite.y}`);
-        this.message(`Base colission in ${this.jeep1.sprite.x} and ${this.jeep1.sprite.y}`);
+        
+        this.display.message(`Base colission in ${this.jeep1.sprite.x} and ${this.jeep1.sprite.y}`);
+        this.jeep1.repairShield();
     }
-
-    message(msg = '') {
+  
+    
+   /* message(msg = '') {
         this.messageBox.setText(msg);
     }
 
@@ -267,5 +276,5 @@ export class SceneOne extends Scene {
                     fontSize: '18px',
                     fill: 'white'
                 });
-    }
+    }*/
 }
