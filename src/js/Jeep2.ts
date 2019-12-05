@@ -13,8 +13,8 @@ export class Jeep2 {
     messageBox
     sprite: Physics.Arcade.Sprite
     bateria: number;
-    oxigen: number;//variable oxigeno
-    oxigenInicial: number=50;//cantidad inicial oxigeno7500
+    //oxigen: number;//variable oxigeno
+    oxigen: number=10;//cantidad inicial oxigeno7500
     oxigenBajoNivel=20;//nivel bajo de oxigeno
     bateriaInicial: number = 1000;
     bateriaBajoNivel = 100
@@ -219,18 +219,17 @@ export class Jeep2 {
     oxigenDecrement(){//va reduciendo oxigeno del jeep
      
        console.log(this.limite);
-        if(this.oxigenInicial>0){
+        if(this.oxigen>0){
            this.limite--;
             if(this.limite==0){
-                this.oxigenInicial--;
+                this.oxigen--;
                 this.limite=62;
             }
-
-            console.log(this.oxigenInicial);
+          //  console.log(this.oxigenInicial);
         }
         else{
-            this.oxigenInicial=0;
-            console.log(this.oxigenInicial);
+            this.oxigen=0;
+           // console.log(this.oxigenInicial);
         } 
     }
 
@@ -284,14 +283,13 @@ export class Jeep2 {
         }
         // this.feedbackHandler('failure', data);
     }
-
     //funcion que reduce oxigeno continuamente
     oxigenCheck(){
-        if(this.oxigenInicial<this.oxigenBajoNivel){
+        //oxigenInicial=50;
+        if(this.oxigen<this.oxigenBajoNivel && this.oxigen>0){
             this.playSound('oxigenoBajo');
         }
     }
-
 
     onDeadBattery() {
         if (!this.fatalFailure) {
@@ -309,13 +307,13 @@ export class Jeep2 {
     update() {
         if (!this.fatalFailure) {
             // this.shieldCheck();
-             this.oxigenDecrement();
-             this.oxigenCheck();
+            this.oxigenDecrement();
+            this.oxigenCheck();
             this.batteryCheck();
             this.jeepStopCheck();
             this.scene.display.updateShieldMessage(this.shield);
             this.scene.display.updateEnergyMessage(this.bateria);
-            this.scene.display.updateOxigenMessage(this.oxigenInicial);
+            this.scene.display.updateOxigenMessage(this.oxigen);
         }
     }
 

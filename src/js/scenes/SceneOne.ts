@@ -1,8 +1,9 @@
-import { Scene, Physics, Input, Cameras } from 'phaser';
+import { Scene, GameObjects, Physics, Input, Cameras } from 'phaser';
 import { Jeep2 } from '../Jeep2';
 import { JeepConfig } from './JeepConfig';
 import { Crater } from '../Crater';
 import { Display } from '../Display';
+import { Sample } from '../Sample';
 
 export class SceneOne extends Scene {
     iconobase: Phaser.GameObjects.Image | undefined;
@@ -26,10 +27,21 @@ export class SceneOne extends Scene {
     crater2: Crater;
     crater3: Crater;
     crater4: Crater;
+    muestra1: Sample;
+    muestra2: Sample;
+    muestra3: Sample;
+    muestra4: Sample;
+    //sampleTaken=0;
+   
     iconoCrater1: Physics.Arcade.Sprite;
     iconoCrater2: Physics.Arcade.Sprite;
     iconoCrater3: Physics.Arcade.Sprite;
     iconoCrater4: Physics.Arcade.Sprite;
+    iconoMuestra1: Physics.Arcade.Sprite;
+    iconoMuestra2: Physics.Arcade.Sprite;
+    iconoMuestra3: Physics.Arcade.Sprite;
+    iconoMuestra4: Physics.Arcade.Sprite;
+ 
     collision: string;
     display: Display;
 
@@ -56,6 +68,15 @@ export class SceneOne extends Scene {
         this.crater3.preload();
         this.crater4 = new Crater({ scene: this, x: 150, y: 400, widht: 140, height: 140 });
         this.crater4.preload();
+        this.muestra1 = new Sample({scene: this, x:440,y: 500, widht:10,height:10});
+        this.muestra1.preload();
+        this.muestra2 = new Sample({scene: this, x:600,y: 450, widht:10,height:10});
+        this.muestra2.preload();
+        this.muestra3 = new Sample({scene: this, x:40,y: 40, widht:10,height:10});
+        this.muestra3.preload();
+        this.muestra4 = new Sample({scene: this, x:700,y:50, widht:10,height:10});
+        this.muestra4.preload();
+
     }
 
     create() {
@@ -63,6 +84,10 @@ export class SceneOne extends Scene {
         this.crater2.draw();
         this.crater3.draw();
         this.crater4.draw();
+        /*this.muestra1.draw();
+        this.muestra2.draw();
+        this.muestra3.draw();
+        this.muestra4.draw();*/
 
         this.bgMusic = this.sound.add('musicaFondo', {
             volume: 0.5,
@@ -84,6 +109,27 @@ export class SceneOne extends Scene {
         this.iconoCrater2 = this.physics.add.sprite(170, 470, 'invisibleCrater');
         this.iconoCrater3 = this.physics.add.sprite(668, 170, 'invisibleCrater');
         this.iconoCrater4 = this.physics.add.sprite(730, 420, 'invisibleCrater');
+        this.iconoMuestra1 = this.physics.add.sprite(440, 500, 'sample');
+        this.iconoMuestra2 = this.physics.add.sprite(600, 450, 'sample');
+        this.iconoMuestra3 = this.physics.add.sprite(40, 40, 'sample');
+        this.iconoMuestra4 = this.physics.add.sprite(700, 50, 'sample');
+      
+       //this.muestrasData.locations.forEach( locationPos => {
+       //           this.physics.add.sprite(locationPos.x, locationPos.y, 'sample');   
+
+            // this.muestraImages['1'].sprite = new Physics.Arcade.Sprite(this, 300, 333, 'sample'); 
+
+
+            // this.muestraImages['1'].displayWidth = 20;  //this.muestrasData.width;
+            // this.muestraImages['1'].displayHeight = 20; //this.muestrasData.height;
+    //        this.muestraImages['1'].collected = false;
+            // this.physics.add.existing(this.muestraImages['1'].sprite);
+     //   })
+
+     //   this.muestraImages['1'] =   this.physics.add.sprite(330, 333, 'sample'); 
+    //  this.muestras[1].displayWidth = 20;
+    //  this.muestras[1].displayHeight = 20;
+
         this.iconoCrater1.displayWidth = 120;
         this.iconoCrater1.displayHeight = 120;
         this.iconoCrater2.displayWidth = 220;
@@ -92,6 +138,17 @@ export class SceneOne extends Scene {
         this.iconoCrater3.displayHeight = 45;
         this.iconoCrater4.displayWidth = 60;
         this.iconoCrater4.displayHeight = 210;
+        
+        this.iconoMuestra1.displayWidth = 20;
+        this.iconoMuestra1.displayHeight = 20;
+        this.iconoMuestra2.displayWidth = 20;
+        this.iconoMuestra2.displayHeight = 20;
+        this.iconoMuestra3.displayWidth = 20;
+        this.iconoMuestra3.displayHeight = 20;
+        this.iconoMuestra4.displayWidth = 20;
+        this.iconoMuestra4.displayHeight = 20;
+
+
         this.jeep1.sprite = this.physics.add.sprite(
             this.jeep1.initialX,
             this.jeep1.initialY,
@@ -102,6 +159,7 @@ export class SceneOne extends Scene {
        // this.jeep1.oxigenDecrement();//probando
         this.collisionListenerBetweenBaseAndJeep();
         this.collisionListenerBetweenCraterAndJeep();
+        this.collisionListenerBetweenSampleAndJeep();
       //  this.display.messageBoxSetup();
         this.display.create();
         this.worldSetup();
@@ -123,6 +181,7 @@ export class SceneOne extends Scene {
         this.load.image('base', '../../../assets/images/iconobase.png');
         this.load.image('bg', '../../../assets/images/suelo2.jpg');
         this.load.image('invisibleCrater', '../../../assets/images/enBlanco.png');
+        this.load.image('sample', '../../../assets/images/muestras2.gif');
     }
 
     worldSetup() {
@@ -208,6 +267,41 @@ export class SceneOne extends Scene {
             null,
             this);
     }
+    collisionListenerBetweenSampleAndJeep() {
+        this.physics.add.collider(
+            this.iconoMuestra1,
+            this.jeep1.sprite,
+            this.CollectsampleHit,
+            null,
+            this);
+
+        this.physics.add.collider(
+            this.iconoMuestra2,
+            this.jeep1.sprite,
+            this.CollectsampleHit,
+            null,
+            this);
+        this.physics.add.collider(
+            this.iconoMuestra3,
+            this.jeep1.sprite,
+            this.CollectsampleHit,
+            null,
+            this);
+        this.physics.add.collider(
+            this.iconoMuestra4,
+            this.jeep1.sprite,
+            this.CollectsampleHit,
+            null,
+            this);
+
+        //    this.physics.add.collider(
+        // this.crater1.craterImage,
+        //     this.jeep1.sprite,
+        //    this.jeep1.collisionWithCrater,
+        //     null,
+        //     this);
+    }
+
     collisionListenerBetweenCraterAndJeep() {
         this.physics.add.collider(
             this.iconoCrater1,
@@ -246,6 +340,12 @@ export class SceneOne extends Scene {
        
         this.display.message(`Crater1 colission`);
         this.collision = this.jeep1.direction;
+    }
+    CollectsampleHit(sample, jeep) {
+        sample.visible = false;
+        // jeep.visible = false;
+        this.display.message(`Sample Collected`);
+        
     }
     playerHit() {//probando para colision con crater1
         
