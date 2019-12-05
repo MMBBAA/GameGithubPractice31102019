@@ -99,6 +99,7 @@ export class SceneOne extends Scene {
         this.jeep1.sprite.setScale(0.15);
 
         this.keysSetup();
+       // this.jeep1.oxigenDecrement();//probando
         this.collisionListenerBetweenBaseAndJeep();
         this.collisionListenerBetweenCraterAndJeep();
       //  this.display.messageBoxSetup();
@@ -186,8 +187,6 @@ export class SceneOne extends Scene {
         this.jeep1.update();
         this.crater1.draw();
 
-
-
     }
 
     toggleMusic(forcetrue = false) {
@@ -253,7 +252,6 @@ export class SceneOne extends Scene {
         this.display.message(`Crater colission in ${this.jeep1.sprite.x} and ${this.jeep1.sprite.y}`);
         
     }
-
     
     baseHit() {
         

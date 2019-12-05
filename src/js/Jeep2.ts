@@ -1,4 +1,4 @@
-import { Physics,GameObjects } from 'phaser';
+import { Physics,GameObjects,Math } from 'phaser';
 import { SceneOne } from './scenes/SceneOne';
 
 
@@ -13,6 +13,9 @@ export class Jeep2 {
     messageBox
     sprite: Physics.Arcade.Sprite
     bateria: number;
+    oxigen: number;//variable oxigeno
+    oxigenInicial: number=50;//cantidad inicial oxigeno7500
+    oxigenBajoNivel=20;//nivel bajo de oxigeno
     bateriaInicial: number = 1000;
     bateriaBajoNivel = 100
     initialDirection: string = 'right';
@@ -22,8 +25,10 @@ export class Jeep2 {
     sounds: Array<any> = [];
     fatalFailure: boolean = false;
     speed: number = 1;
+    limite: number =62;//probando
     engineRunning: boolean = false;
     batteryWarningOn: boolean = false;
+    oxigenWarning: boolean= false;//booleano alerta oxigeno
     config: any;
     notMoving: boolean = true;
     notMusic: boolean = false;
@@ -206,10 +211,27 @@ export class Jeep2 {
         this.playSound('Freno');
     }
     //recarga de bateria con la letra r
-    rechargeBattery(amount = this.bateriaInicial) {
-        
-        this.bateria = amount;
+    rechargeBattery() {
+        this.bateria++;
         this.playSound('RecargaEnergia');
+    }
+
+    oxigenDecrement(){//va reduciendo oxigeno del jeep
+     
+       console.log(this.limite);
+        if(this.oxigenInicial>0){
+           this.limite--;
+            if(this.limite==0){
+                this.oxigenInicial--;
+                this.limite=62;
+            }
+
+            console.log(this.oxigenInicial);
+        }
+        else{
+            this.oxigenInicial=0;
+            console.log(this.oxigenInicial);
+        } 
     }
 
     get bateriaAgotado() {
@@ -253,7 +275,6 @@ export class Jeep2 {
     }
 
     shutDown() {
-        // this.shieldLowWarningOff();
         this.batteryLowWarningOff();
     }
     onFailure(data, fatalFailure = false) {
@@ -262,6 +283,13 @@ export class Jeep2 {
             this.shutDown();
         }
         // this.feedbackHandler('failure', data);
+    }
+
+    //funcion que reduce oxigeno continuamente
+    oxigenCheck(){
+        if(this.oxigenInicial<this.oxigenBajoNivel){
+            this.playSound('oxigenoBajo');
+        }
     }
 
 
@@ -281,12 +309,13 @@ export class Jeep2 {
     update() {
         if (!this.fatalFailure) {
             // this.shieldCheck();
-            // this.oxigenDecrement();
-            //  this.oxigenCheck();
+             this.oxigenDecrement();
+             this.oxigenCheck();
             this.batteryCheck();
             this.jeepStopCheck();
             this.scene.display.updateShieldMessage(this.shield);
             this.scene.display.updateEnergyMessage(this.bateria);
+            this.scene.display.updateOxigenMessage(this.oxigenInicial);
         }
     }
 

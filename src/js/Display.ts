@@ -3,6 +3,7 @@ export class Display {
     messageBox: any;
     messageShieldBox: any;
     messagePowerBox: any;
+    messageOxigenBox: any;
     add: any;
     scene: Scene;
     
@@ -16,7 +17,9 @@ export class Display {
     create(){
         this.shieldMessageBoxSetup();
         this.powerMessageBoxSetup();
+        this.oxigenMessageBoxSetup();
         this.messageBoxSetup();
+        
     }
     message(msg = '') {
         this.messageBox.setText(msg);
@@ -58,6 +61,23 @@ export class Display {
     powerMessageBoxSetup(msg = '', x = 450, y = 50) {
         //this.messageBox =
         this.messagePowerBox=
+            this.scene.add.text(
+                x,
+                y,
+                msg,
+                {
+                    fontSize: '14px',
+                    fill: 'white'
+                });
+    }
+
+    updateOxigenMessage(msg){
+        this.messageOxigenBox.setText(`O2 Time:${msg}`);
+    }
+
+    oxigenMessageBoxSetup(msg = '', x = 550, y = 50) {
+        //this.messageBox =
+        this.messageOxigenBox=
             this.scene.add.text(
                 x,
                 y,
