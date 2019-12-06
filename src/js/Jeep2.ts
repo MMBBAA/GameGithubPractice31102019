@@ -14,7 +14,7 @@ export class Jeep2 {
     sprite: Physics.Arcade.Sprite
     bateria: number;
     //oxigen: number;//variable oxigeno
-    oxigen: number=10;//cantidad inicial oxigeno7500
+    oxigen: number=10000;//cantidad inicial oxigeno7500
     oxigenBajoNivel=20;//nivel bajo de oxigeno
     bateriaInicial: number = 1000;
     bateriaBajoNivel = 100
@@ -125,6 +125,10 @@ export class Jeep2 {
        }else{
             this.shield=0;
         }
+    }
+
+    onSampleCollected(){//funcion de sonido de muestra
+        this.playSound('MuestraRecogida');
     }
 
     _move(direction: string, dx = 1, dy = 1) {

@@ -23,7 +23,7 @@ export class Sample {
     }
 
     collisionHandler(obj = null) {
-        this.contactSound
+      //  this.contactSound
         this.contactSound.play();
         // if (obj) {
         //     obj.collisiontHandler(this);
