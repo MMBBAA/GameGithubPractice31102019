@@ -180,7 +180,7 @@ export class Jeep2 {
 
         //console.table(this.sounds);
         // this.sounds[soundID].play && 
-        console.log(soundID);
+       // console.log(soundID);
         if (this.sounds[soundID].seek === 0) {
             this.sounds[soundID].play();
         }
@@ -222,7 +222,6 @@ export class Jeep2 {
 
     oxigenDecrement(){//va reduciendo oxigeno del jeep
      
-       console.log(this.limite);
         if(this.oxigen>0){
            this.limite--;
             if(this.limite==0){

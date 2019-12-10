@@ -4,6 +4,7 @@ import { JeepConfig } from './JeepConfig';
 import { Crater } from '../Crater';
 import { Display } from '../Display';
 import { Sample } from '../Sample';
+import { Tornado} from '../Tornado';
 
 export class SceneOne extends Scene {
     iconobase: Phaser.GameObjects.Image | undefined;
@@ -20,7 +21,6 @@ export class SceneOne extends Scene {
     key_SPACE: Input.Keyboard.Key;
     iconoBase: Phaser.GameObjects.Sprite;
     onBase: boolean = true;
-    sumarMuestra: boolean= false;//probando
     messageBox: Phaser.GameObjects.Text;
     bgImg: Phaser.GameObjects.Sprite;
     musicIsPlaying: boolean = false;
@@ -32,10 +32,9 @@ export class SceneOne extends Scene {
     muestra2: Sample;
     muestra3: Sample;
     muestra4: Sample;
-    jeepOnSample: boolean=false;//probando
-    contador: number=0;
-    prueba:number=0;//problando
-   
+    tornado1: Tornado;
+    tornado2: Tornado;
+
     iconoCrater1: Physics.Arcade.Sprite;
     iconoCrater2: Physics.Arcade.Sprite;
     iconoCrater3: Physics.Arcade.Sprite;
@@ -44,22 +43,26 @@ export class SceneOne extends Scene {
     iconoMuestra2: Physics.Arcade.Sprite;
     iconoMuestra3: Physics.Arcade.Sprite;
     iconoMuestra4: Physics.Arcade.Sprite;
- 
+    iconoTornado1: Physics.Arcade.Sprite;
+    iconoTornado2: Physics.Arcade.Sprite;
     collision: string;
     display: Display;
-    recolectar: boolean=false;//probando
-
-
-
+    
 
     constructor() {
         super({
             key: 'SceneOne'
         })
-        this.display=new Display({scene:this});
+        this.display = new Display({ scene: this });
     }
 
     preload() {
+
+        /*this.load.spritesheet('tornado4',
+            '../../../assets/spritesheet/sprites.png',
+            { frameWidth: 200, frameHeight: 200 }
+        );*/
+
         this.jeep1 = new Jeep2(this, 400, 300, JeepConfig);
         this.loadImagesFunction();
         this.load.audio('musicaFondo', '../../assets/sounds/musica.mp3');
@@ -72,26 +75,22 @@ export class SceneOne extends Scene {
         this.crater3.preload();
         this.crater4 = new Crater({ scene: this, x: 150, y: 400, widht: 140, height: 140 });
         this.crater4.preload();
-        this.muestra1 = new Sample({scene: this, x:440,y: 500, widht:5,height:5});
+        this.muestra1 = new Sample({ scene: this, x: 440, y: 500, widht: 5, height: 5 });
         this.muestra1.preload();
-        this.muestra2 = new Sample({scene: this, x:600,y: 450, widht:5,height:5});
+        this.muestra2 = new Sample({ scene: this, x: 600, y: 450, widht: 5, height: 5 });
         this.muestra2.preload();
-        this.muestra3 = new Sample({scene: this, x:40,y: 40, widht:5,height:5});
+        this.muestra3 = new Sample({ scene: this, x: 40, y: 40, widht: 5, height: 5 });
         this.muestra3.preload();
-        this.muestra4 = new Sample({scene: this, x:700,y:50, widht:5,height:5});
+        this.muestra4 = new Sample({ scene: this, x: 700, y: 50, widht: 5, height: 5 });
         this.muestra4.preload();
+        this.tornado1= new Tornado({scene: this, x:100,y:50, width:20, height:20 });
+        this.tornado1.preload();
+        this.tornado2= new Tornado({scene: this, x:500,y:250, width:20, height:20 });
+        this.tornado2.preload();
 
     }
 
     create() {
-        this.crater1.draw();
-        this.crater2.draw();
-        this.crater3.draw();
-        this.crater4.draw();
-        /*this.muestra1.draw();
-        this.muestra2.draw();
-        this.muestra3.draw();
-        this.muestra4.draw();*/
 
         this.bgMusic = this.sound.add('musicaFondo', {
             volume: 0.5,
@@ -108,6 +107,7 @@ export class SceneOne extends Scene {
         // this.bgImg.displayWidth = 890;
 
         //this.bgImg.setScale(2);
+         //this.iconoTornado2.setScale(1.2);
         this.iconoBase = this.physics.add.sprite(400, 300, 'base');
         this.iconoCrater1 = this.physics.add.sprite(440, 150, 'invisibleCrater');
         this.iconoCrater2 = this.physics.add.sprite(170, 470, 'invisibleCrater');
@@ -117,22 +117,12 @@ export class SceneOne extends Scene {
         this.iconoMuestra2 = this.physics.add.sprite(600, 450, 'sample');
         this.iconoMuestra3 = this.physics.add.sprite(40, 40, 'sample');
         this.iconoMuestra4 = this.physics.add.sprite(700, 50, 'sample');
-      
-       //this.muestrasData.locations.forEach( locationPos => {
-       //           this.physics.add.sprite(locationPos.x, locationPos.y, 'sample');   
-
-            // this.muestraImages['1'].sprite = new Physics.Arcade.Sprite(this, 300, 333, 'sample'); 
-
-
-            // this.muestraImages['1'].displayWidth = 20;  //this.muestrasData.width;
-            // this.muestraImages['1'].displayHeight = 20; //this.muestrasData.height;
-    //        this.muestraImages['1'].collected = false;
-            // this.physics.add.existing(this.muestraImages['1'].sprite);
-     //   })
-
-     //   this.muestraImages['1'] =   this.physics.add.sprite(330, 333, 'sample'); 
-    //  this.muestras[1].displayWidth = 20;
-    //  this.muestras[1].displayHeight = 20;
+        this.iconoTornado1 = this.physics.add.sprite(100, 100, 'tornado');
+        this.iconoTornado2 = this.physics.add.sprite(400, 250, 'tornado');
+        [this.iconoTornado1, this.iconoTornado2].forEach( item => {
+            item.displayHeight = 50;
+            item.displayWidth = 50;
+       })
 
         this.iconoCrater1.displayWidth = 120;
         this.iconoCrater1.displayHeight = 120;
@@ -142,17 +132,23 @@ export class SceneOne extends Scene {
         this.iconoCrater3.displayHeight = 45;
         this.iconoCrater4.displayWidth = 60;
         this.iconoCrater4.displayHeight = 210;
-        
-        this.iconoMuestra1.displayWidth = 20;
+
+       /* this.iconoMuestra1.displayWidth = 20;
         this.iconoMuestra1.displayHeight = 20;
         this.iconoMuestra2.displayWidth = 20;
         this.iconoMuestra2.displayHeight = 20;
-        this.iconoMuestra3.displayWidth =20;
+        this.iconoMuestra3.displayWidth = 20;
         this.iconoMuestra3.displayHeight = 20;
         this.iconoMuestra4.displayWidth = 20;
-        this.iconoMuestra4.displayHeight = 20;
+        this.iconoMuestra4.displayHeight = 20;*/
+    
+        [this.iconoMuestra1, this.iconoMuestra2, this.iconoMuestra3,
+            this.iconoMuestra4].forEach( item => {
+            item.displayHeight = 20;
+            item.displayWidth = 20;
+       })
 
-        
+     
 
 
         this.jeep1.sprite = this.physics.add.sprite(
@@ -162,11 +158,11 @@ export class SceneOne extends Scene {
         this.jeep1.sprite.setScale(0.15);
 
         this.keysSetup();
-       // this.jeep1.oxigenDecrement();//probando
+        // this.jeep1.oxigenDecrement();//probando
         this.collisionListenerBetweenBaseAndJeep();
         this.collisionListenerBetweenCraterAndJeep();
         this.collisionListenerBetweenSampleAndJeep();
-      //  this.display.messageBoxSetup();
+        //  this.display.messageBoxSetup();
         this.display.create();
         this.worldSetup();
         this.cameraSetup();
@@ -174,21 +170,22 @@ export class SceneOne extends Scene {
         this.jeep1.sprite.setCollideWorldBounds(true);
     }
 
-    mouseCheck() {
-        const pointer = this.input.activePointer;
-        // Convert the mouse position to world position within the camera
-        const worldPoint = pointer.positionToCamera(this.cameras.main);
-        if (pointer.isDown) {
-            this.message(`Mouse clicked at ${worldPoint.x} ${worldPoint.y}`);
-        }
-    }
+
 
     loadImagesFunction() {
         this.load.image('base', '../../../assets/images/iconobase.png');
         this.load.image('bg', '../../../assets/images/suelo2.jpg');
         this.load.image('invisibleCrater', '../../../assets/images/enBlanco.png');
         this.load.image('sample', '../../../assets/images/muestras2.gif');
-    }
+        this.load.image('tornado', '../../../assets/images/tornado2.gif');
+
+
+        //  this.load.spritesheet('tornado','../../../assets/spritesheet/sprites.png');
+
+        //    this.load.spritesheet('tornado', '../../../assets/images/imagen2.jpg',
+
+        // this.load.spritesheet('tornado', '../../../assets/spritesheet/metalslug_mummy37x45.png',
+    };
 
     worldSetup() {
         // create an invisible rectangle, that deines edges of the world
@@ -251,7 +248,8 @@ export class SceneOne extends Scene {
         this.keysListener();
         this.jeep1.update();
         this.crater1.draw();
-       
+
+        //this.tornadoImg.anims.play('tornadoMoving', true)
 
     }
 
@@ -338,51 +336,50 @@ export class SceneOne extends Scene {
         //     this);
     }
     collisionHit() {
-       
+
         this.display.message(`Crater1 colission`);
         this.collision = this.jeep1.direction;
     }
     CollectsampleHit(sample, jeep) {
-       sample.visible = false;
-       this.jeep1.onSampleCollected();
-       this.Comprobar();
-    
+        sample.visible = false;
+        this.jeep1.onSampleCollected();
+        this.Comprobar();
+
     }
-    Comprobar(){
-        if(this.iconoMuestra1.visible==false&&this.iconoMuestra2.visible==false
-            &&this.iconoMuestra3.visible==false&&this.iconoMuestra4.visible==false){
-                this.display.message(`all Samples Collected, return to base`); 
-            }
+    Comprobar() {
+        if (this.iconoMuestra1.visible == false && this.iconoMuestra2.visible == false
+            && this.iconoMuestra3.visible == false && this.iconoMuestra4.visible == false) {
+            this.display.message(`all Samples Collected, return to base`);
+        }
     }
-   
-  
-    
+
+
+
     playerHit() {//probando para colision con crater1
-        
+
         this.display.message(`Crater colission in ${this.jeep1.sprite.x} and ${this.jeep1.sprite.y}`);
-        
+
     }
-    
+
     baseHit() {
-        
+
         this.display.message(`Base colission in ${this.jeep1.sprite.x} and ${this.jeep1.sprite.y}`);
         this.jeep1.repairShield();
     }
-  
-    
-   /* message(msg = '') {
-        this.messageBox.setText(msg);
-    }
 
-    messageBoxSetup(msg = '', x = 50, y = 50) {
-        this.messageBox =
-            this.add.text(
-                x,
-                y,
-                msg,
-                {
-                    fontSize: '18px',
-                    fill: 'white'
-                });
-    }*/
-}
+
+/* message(msg = '') {
+     this.messageBox.setText(msg);
+ }
+
+ messageBoxSetup(msg = '', x = 50, y = 50) {
+     this.messageBox =
+         this.add.text(
+             x,
+             y,
+             msg,
+             {
+                 fontSize: '18px',
+                 fill: 'white'
+             });
+ }*/
