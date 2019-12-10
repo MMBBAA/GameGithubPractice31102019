@@ -127,6 +127,15 @@ export class Jeep2 {
         }
     }
 
+    onTornadoCollision() {
+        if(this.shield>0){
+         this.shield--;
+      this.playSound('ImpactoHuracan2');
+        }else{
+             this.shield=0;
+         }
+     }
+
     onSampleCollected(){//funcion de sonido de muestra
         this.playSound('MuestraRecogida');
     }

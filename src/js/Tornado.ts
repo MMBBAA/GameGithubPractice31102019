@@ -27,3 +27,7 @@ export class Tornado {
         this.contactSound.play();
 
     }
+
+    movement(){
+        this.x++;
+    }

@@ -4,7 +4,7 @@ import { JeepConfig } from './JeepConfig';
 import { Crater } from '../Crater';
 import { Display } from '../Display';
 import { Sample } from '../Sample';
-import { Tornado} from '../Tornado';
+import { Tornado } from '../Tornado';
 
 export class SceneOne extends Scene {
     iconobase: Phaser.GameObjects.Image | undefined;
@@ -47,7 +47,7 @@ export class SceneOne extends Scene {
     iconoTornado2: Physics.Arcade.Sprite;
     collision: string;
     display: Display;
-    
+
 
     constructor() {
         super({
@@ -58,10 +58,6 @@ export class SceneOne extends Scene {
 
     preload() {
 
-        /*this.load.spritesheet('tornado4',
-            '../../../assets/spritesheet/sprites.png',
-            { frameWidth: 200, frameHeight: 200 }
-        );*/
 
         this.jeep1 = new Jeep2(this, 400, 300, JeepConfig);
         this.loadImagesFunction();
@@ -83,9 +79,9 @@ export class SceneOne extends Scene {
         this.muestra3.preload();
         this.muestra4 = new Sample({ scene: this, x: 700, y: 50, widht: 5, height: 5 });
         this.muestra4.preload();
-        this.tornado1= new Tornado({scene: this, x:100,y:50, width:20, height:20 });
+        this.tornado1 = new Tornado({ scene: this, x: 100, y: 50, width: 20, height: 20 });
         this.tornado1.preload();
-        this.tornado2= new Tornado({scene: this, x:500,y:250, width:20, height:20 });
+        this.tornado2 = new Tornado({ scene: this, x: 500, y: 250, width: 20, height: 20 });
         this.tornado2.preload();
 
     }
@@ -107,7 +103,7 @@ export class SceneOne extends Scene {
         // this.bgImg.displayWidth = 890;
 
         //this.bgImg.setScale(2);
-         //this.iconoTornado2.setScale(1.2);
+        //this.iconoTornado2.setScale(1.2);
         this.iconoBase = this.physics.add.sprite(400, 300, 'base');
         this.iconoCrater1 = this.physics.add.sprite(440, 150, 'invisibleCrater');
         this.iconoCrater2 = this.physics.add.sprite(170, 470, 'invisibleCrater');
@@ -117,12 +113,12 @@ export class SceneOne extends Scene {
         this.iconoMuestra2 = this.physics.add.sprite(600, 450, 'sample');
         this.iconoMuestra3 = this.physics.add.sprite(40, 40, 'sample');
         this.iconoMuestra4 = this.physics.add.sprite(700, 50, 'sample');
-        this.iconoTornado1 = this.physics.add.sprite(100, 100, 'tornado');
+        /*this.iconoTornado1 = this.physics.add.sprite(100, 100, 'tornado');
         this.iconoTornado2 = this.physics.add.sprite(400, 250, 'tornado');
         [this.iconoTornado1, this.iconoTornado2].forEach( item => {
             item.displayHeight = 50;
             item.displayWidth = 50;
-       })
+       })*/
 
         this.iconoCrater1.displayWidth = 120;
         this.iconoCrater1.displayHeight = 120;
@@ -133,23 +129,11 @@ export class SceneOne extends Scene {
         this.iconoCrater4.displayWidth = 60;
         this.iconoCrater4.displayHeight = 210;
 
-       /* this.iconoMuestra1.displayWidth = 20;
-        this.iconoMuestra1.displayHeight = 20;
-        this.iconoMuestra2.displayWidth = 20;
-        this.iconoMuestra2.displayHeight = 20;
-        this.iconoMuestra3.displayWidth = 20;
-        this.iconoMuestra3.displayHeight = 20;
-        this.iconoMuestra4.displayWidth = 20;
-        this.iconoMuestra4.displayHeight = 20;*/
-    
         [this.iconoMuestra1, this.iconoMuestra2, this.iconoMuestra3,
-            this.iconoMuestra4].forEach( item => {
+        this.iconoMuestra4].forEach(item => {
             item.displayHeight = 20;
             item.displayWidth = 20;
-       })
-
-     
-
+        })
 
         this.jeep1.sprite = this.physics.add.sprite(
             this.jeep1.initialX,
@@ -157,17 +141,33 @@ export class SceneOne extends Scene {
             'jeep_right');
         this.jeep1.sprite.setScale(0.15);
 
+        this.iconoTornado1 = this.physics.add.sprite(100, 100, 'tornado');
+        this.iconoTornado2 = this.physics.add.sprite(400, 250, 'tornado');
+        [this.iconoTornado1, this.iconoTornado2].forEach(item => {
+            item.displayHeight = 50;
+            item.displayWidth = 50;
+        })
+        this.iconoTornado1.horizontalDirection = "derecha";
+        this.iconoTornado2.horizontalDirection = "derecha";
+        this.iconoTornado1.verticalDirection="abajo";
+        this.iconoTornado2.verticalDirection="abajo";
+
         this.keysSetup();
         // this.jeep1.oxigenDecrement();//probando
         this.collisionListenerBetweenBaseAndJeep();
         this.collisionListenerBetweenCraterAndJeep();
         this.collisionListenerBetweenSampleAndJeep();
+        this.collisionListenerBetweenTornadoAndJeep();
         //  this.display.messageBoxSetup();
         this.display.create();
         this.worldSetup();
         this.cameraSetup();
 
         this.jeep1.sprite.setCollideWorldBounds(true);
+        this.iconoTornado1.setCollideWorldBounds(true);
+        this.iconoTornado2.setCollideWorldBounds(true);
+
+
     }
 
 
@@ -180,12 +180,7 @@ export class SceneOne extends Scene {
         this.load.image('tornado', '../../../assets/images/tornado2.gif');
 
 
-        //  this.load.spritesheet('tornado','../../../assets/spritesheet/sprites.png');
-
-        //    this.load.spritesheet('tornado', '../../../assets/images/imagen2.jpg',
-
-        // this.load.spritesheet('tornado', '../../../assets/spritesheet/metalslug_mummy37x45.png',
-    };
+   };
 
     worldSetup() {
         // create an invisible rectangle, that deines edges of the world
@@ -247,10 +242,36 @@ export class SceneOne extends Scene {
 
         this.keysListener();
         this.jeep1.update();
-        this.crater1.draw();
+        this.moveTornado(this.iconoTornado1);
+        this.moveTornado(this.iconoTornado2);
 
-        //this.tornadoImg.anims.play('tornadoMoving', true)
+    }
 
+
+
+    //metodo para mover el tornado
+    moveTornado(tornado: Physics.Arcade.Sprite) {
+        let speed = 2
+        let directionX = 1;
+        let directionY = 1;
+        let signo=Phaser.Math.Between(0, 2);//vibracion
+        
+
+        if (tornado.horizontalDirection === 'izquierda') {
+            directionX = -directionX*signo
+        }
+        if (tornado.verticalDirection === 'abajo') {
+            directionY = -directionY*signo
+        }
+        if (tornado.horizontalDirection === 'derecha') {//probando
+            directionX = directionX*signo
+        }
+
+        directionX = directionX * speed;
+        directionY = directionY * speed;
+        tornado.x = tornado.x + directionX;
+        tornado.y = tornado.y + directionY;
+        this.bounceTornado(tornado);
     }
 
     toggleMusic(forcetrue = false) {
@@ -261,6 +282,33 @@ export class SceneOne extends Scene {
         else {
             this.bgMusic.stop();
             this.musicIsPlaying = false;
+        }
+    }
+
+    //deteccion de colision de tormenta con el borde y rebote
+    bounceTornado(tornado: Physics.Arcade.Sprite) {
+
+        var top = this.physics.world.bounds.top;
+        var bottom = this.physics.world.bounds.bottom;
+        var left = this.physics.world.bounds.left;
+        var right = this.physics.world.bounds.right;
+
+        this.display.message(`Far top border: ${top}, \nTornado y: ${tornado.y} \n directionX: ${tornado.horizontalDirection} \ndirectionY: ${tornado.verticalDirection}`);
+        if ((tornado.x + 23) === right) {
+            tornado.horizontalDirection = "izquierda";
+            this.display.message(`revotandoTornado izquierda `);
+        }
+        if ((tornado.x - 23) === left) {
+            tornado.horizontalDirection = "derecha";
+            this.display.message(`revotandoTornado derecha `);
+        }
+        if((tornado.y+21)===bottom){
+            tornado.verticalDirection = "abajo";
+            this.display.message(`revotandoTornado abajo `);
+        }
+        if((tornado.y-21)===top){
+            tornado.verticalDirection = "arriba";
+            this.display.message(`revotandoTornado arriba `);
         }
     }
 
@@ -276,31 +324,52 @@ export class SceneOne extends Scene {
         this.physics.add.collider(
             this.iconoMuestra1,
             this.jeep1.sprite,
-            this.CollectsampleHit,
+            this.collectSampleHit,
             null,
             this);
 
         this.physics.add.collider(
             this.iconoMuestra2,
             this.jeep1.sprite,
-            this.CollectsampleHit,
+            this.collectSampleHit,
             null,
             this);
         this.physics.add.collider(
             this.iconoMuestra3,
             this.jeep1.sprite,
-            this.CollectsampleHit,
+            this.collectSampleHit,
             null,
             this);
         this.physics.add.collider(
             this.iconoMuestra4,
             this.jeep1.sprite,
-            this.CollectsampleHit,
+            this.collectSampleHit,
             null,
             this);
 
     }
 
+    //colisiones entre jeep y tormentas
+    collisionListenerBetweenTornadoAndJeep() {
+        this.physics.add.collider(
+            this.jeep1.sprite,
+            this.iconoTornado1,
+            // this.jeep1.sprite,
+            this.tornadoHit,
+            null,
+            this);
+
+        this.physics.add.collider(
+            this.jeep1.sprite,
+            this.iconoTornado2,
+            //this.jeep1.sprite,
+            this.tornadoHit,
+            null,
+            this);
+
+
+    }
+  
     collisionListenerBetweenCraterAndJeep() {
         this.physics.add.collider(
             this.iconoCrater1,
@@ -340,7 +409,14 @@ export class SceneOne extends Scene {
         this.display.message(`Crater1 colission`);
         this.collision = this.jeep1.direction;
     }
-    CollectsampleHit(sample, jeep) {
+    tornadoHit() {
+
+        this.display.message(`Crater1 colission`);
+        this.jeep1.onTornadoCollision();
+        // this.collision = this.jeep1.direction;
+    }
+
+    collectSampleHit(sample, jeep) {
         sample.visible = false;
         this.jeep1.onSampleCollected();
         this.Comprobar();
@@ -353,8 +429,6 @@ export class SceneOne extends Scene {
         }
     }
 
-
-
     playerHit() {//probando para colision con crater1
 
         this.display.message(`Crater colission in ${this.jeep1.sprite.x} and ${this.jeep1.sprite.y}`);
@@ -366,20 +440,3 @@ export class SceneOne extends Scene {
         this.display.message(`Base colission in ${this.jeep1.sprite.x} and ${this.jeep1.sprite.y}`);
         this.jeep1.repairShield();
     }
-
-
-/* message(msg = '') {
-     this.messageBox.setText(msg);
- }
-
- messageBoxSetup(msg = '', x = 50, y = 50) {
-     this.messageBox =
-         this.add.text(
-             x,
-             y,
-             msg,
-             {
-                 fontSize: '18px',
-                 fill: 'white'
-             });
- }*/
