@@ -20,10 +20,13 @@ export class SceneOne extends Scene {
     key_R: Input.Keyboard.Key;//declarada la r
     key_SPACE: Input.Keyboard.Key;
     iconoBase: Phaser.GameObjects.Sprite;
-    onBase: boolean = true;
+    onBase: boolean = false;
+    allCollected: boolean =true;
     messageBox: Phaser.GameObjects.Text;
     bgImg: Phaser.GameObjects.Sprite;
     musicIsPlaying: boolean = false;
+    victory: boolean =false;
+    defeat: boolean =false;
     crater1: Crater;
     crater2: Crater;
     crater3: Crater;
@@ -47,7 +50,7 @@ export class SceneOne extends Scene {
     iconoTornado2: Physics.Arcade.Sprite;
     collision: string;
     display: Display;
-
+   
 
     constructor() {
         super({
@@ -58,11 +61,9 @@ export class SceneOne extends Scene {
 
     preload() {
 
-
         this.jeep1 = new Jeep2(this, 400, 300, JeepConfig);
         this.loadImagesFunction();
-        this.load.audio('musicaFondo', '../../assets/sounds/musica.mp3');
-        //this.load.audio('craterColission', '../../assets/music/Sonido_Colision_Crater.mp3'); 
+        this.load.audio('musicaFondo', '../../assets/sounds/musica.mp3'); 
         this.crater1 = new Crater({ scene: this, x: 370, y: 80, widht: 140, height: 140 });
         this.crater1.preload();
         this.crater2 = new Crater({ scene: this, x: 150, y: 400, widht: 140, height: 140 });
@@ -98,12 +99,6 @@ export class SceneOne extends Scene {
         this.jeep1.addAudios();
         this.bgImg = this.add.sprite(0, 0, 'bg');
         this.bgImg.setOrigin(0, 0);
-        // this.bgImg.setScale(1.1);
-        // this.bgImg.displayHeight = 590;
-        // this.bgImg.displayWidth = 890;
-
-        //this.bgImg.setScale(2);
-        //this.iconoTornado2.setScale(1.2);
         this.iconoBase = this.physics.add.sprite(400, 300, 'base');
         this.iconoCrater1 = this.physics.add.sprite(440, 150, 'invisibleCrater');
         this.iconoCrater2 = this.physics.add.sprite(170, 470, 'invisibleCrater');
@@ -113,12 +108,6 @@ export class SceneOne extends Scene {
         this.iconoMuestra2 = this.physics.add.sprite(600, 450, 'sample');
         this.iconoMuestra3 = this.physics.add.sprite(40, 40, 'sample');
         this.iconoMuestra4 = this.physics.add.sprite(700, 50, 'sample');
-        /*this.iconoTornado1 = this.physics.add.sprite(100, 100, 'tornado');
-        this.iconoTornado2 = this.physics.add.sprite(400, 250, 'tornado');
-        [this.iconoTornado1, this.iconoTornado2].forEach( item => {
-            item.displayHeight = 50;
-            item.displayWidth = 50;
-       })*/
 
         this.iconoCrater1.displayWidth = 120;
         this.iconoCrater1.displayHeight = 120;
@@ -153,24 +142,21 @@ export class SceneOne extends Scene {
         this.iconoTornado2.verticalDirection="abajo";
 
         this.keysSetup();
-        // this.jeep1.oxigenDecrement();//probando
         this.collisionListenerBetweenBaseAndJeep();
         this.collisionListenerBetweenCraterAndJeep();
         this.collisionListenerBetweenSampleAndJeep();
         this.collisionListenerBetweenTornadoAndJeep();
-        //  this.display.messageBoxSetup();
         this.display.create();
         this.worldSetup();
         this.cameraSetup();
+        this.stopGameJeep();
 
         this.jeep1.sprite.setCollideWorldBounds(true);
         this.iconoTornado1.setCollideWorldBounds(true);
         this.iconoTornado2.setCollideWorldBounds(true);
-
-
+        this.checkGameState();
+        this.positionReturnBase();
     }
-
-
 
     loadImagesFunction() {
         this.load.image('base', '../../../assets/images/iconobase.png');
@@ -178,35 +164,33 @@ export class SceneOne extends Scene {
         this.load.image('invisibleCrater', '../../../assets/images/enBlanco.png');
         this.load.image('sample', '../../../assets/images/muestras2.gif');
         this.load.image('tornado', '../../../assets/images/tornado2.gif');
-
-
    };
 
-    worldSetup() {
-        // create an invisible rectangle, that deines edges of the world
-        this.physics.world.setBounds(0, 0, this.planetMarsWidth, this.planetMarsHeight);
-        // Enables or disables collisions on each edge of the World boundary.
-        this.physics.world.setBoundsCollision(true);
-    }
+   worldSetup() {
+    // create an invisible rectangle, that deines edges of the world
+    this.physics.world.setBounds(0, 0, this.planetMarsWidth, this.planetMarsHeight);
+    // Enables or disables collisions on each edge of the World boundary.
+    this.physics.world.setBoundsCollision(true);//activa o desactiva los bordes del mundo
+}
 
+    /*función cameraSetup, permitiría seguir el movimiento del jeep con una camara, no se ha empleado*/ 
     cameraSetup() {
         this.camera = this.cameras.main;
         // Camera can move to bounds of world
         this.camera.setBounds(0, 0, this.planetMarsWidth, this.planetMarsHeight)
 
         // make camera follow jeep    
-        this.camera.startFollow(this.jeep1.sprite);
-
+        //this.camera.startFollow(this.jeep1.sprite);
     }
-
+    /* eventos de teclado*/
     keysSetup() {
         this.key_M = this.input.keyboard.addKey(Input.Keyboard.KeyCodes.M);
         this.key_A = this.input.keyboard.addKey(Input.Keyboard.KeyCodes.A);
         this.key_W = this.input.keyboard.addKey(Input.Keyboard.KeyCodes.W);
         this.key_S = this.input.keyboard.addKey(Input.Keyboard.KeyCodes.S);
         this.key_D = this.input.keyboard.addKey(Input.Keyboard.KeyCodes.D);
-        this.key_R = this.input.keyboard.addKey(Input.Keyboard.KeyCodes.R);//añadir recarga
-        this.key_SPACE = this.input.keyboard.addKey(Input.Keyboard.KeyCodes.SPACE);
+        this.key_R = this.input.keyboard.addKey(Input.Keyboard.KeyCodes.R);
+        //this.key_SPACE = this.input.keyboard.addKey(Input.Keyboard.KeyCodes.SPACE);
     }
 
     keysListener() {
@@ -233,7 +217,7 @@ export class SceneOne extends Scene {
                 break;
         }
 
-        if (this.key_SPACE.isDown) this.jeep1.brake();
+      //  if (this.key_SPACE.isDown) this.jeep1.onBreak//();
         if (this.key_D.isUp && this.key_A.isUp && this.key_S.isUp
             && this.key_W.isUp) this.jeep1.stop();
     }
@@ -242,28 +226,62 @@ export class SceneOne extends Scene {
 
         this.keysListener();
         this.jeep1.update();
+        this.checkGameState();
+        this.positionReturnBase();
+        this.stopGameJeep();
         this.moveTornado(this.iconoTornado1);
         this.moveTornado(this.iconoTornado2);
+       // this.cameraSetup();//probando
 
     }
 
+    checkGameState(){
 
+        if((this.jeep1.oxigen==0)||(this.jeep1.shield==0)){
+            this.defeat=true;
+            this.display.message(`Mision fracasada`);
+        }
+        if (this.iconoMuestra1.visible == false && this.iconoMuestra2.visible == false
+            && this.iconoMuestra3.visible == false && this.iconoMuestra4.visible == false
+            &&this.onBase==true){
+                this.victory=true;
+                this.display.message(`Mision cumplida`);
+            }
+    }
+    /*detiene el juego cuando se cumpla la victoria o la derrota*/ 
+    stopGameJeep(){
+    if(this.victory==true||this.defeat==true){
+        this.toggleMusic(false);
+        this.scene.pause();
+        this.jeep1.onBreak();
+        }
+}
+    /*cambia el valor de onBase a true o false*/ 
+    positionReturnBase(){
+        if((this.jeep1.sprite.x>=316&&this.jeep1.sprite.x<=484)
+        &&(this.jeep1.sprite.y>=252&&this.jeep1.sprite.y<=370)){
+            this.onBase=true;
+        }
+        else{
+            this.onBase=false;
+            console.log(this.onBase);
+        }
+    }
 
-    //metodo para mover el tornado
+    /*metodo para mover el tornado*/
     moveTornado(tornado: Physics.Arcade.Sprite) {
         let speed = 2
         let directionX = 1;
         let directionY = 1;
         let signo=Phaser.Math.Between(0, 2);//vibracion
         
-
         if (tornado.horizontalDirection === 'izquierda') {
             directionX = -directionX*signo
         }
         if (tornado.verticalDirection === 'abajo') {
             directionY = -directionY*signo
         }
-        if (tornado.horizontalDirection === 'derecha') {//probando
+        if (tornado.horizontalDirection === 'derecha') {
             directionX = directionX*signo
         }
 
@@ -274,6 +292,7 @@ export class SceneOne extends Scene {
         this.bounceTornado(tornado);
     }
 
+    /**activa o desactiva la musica */
     toggleMusic(forcetrue = false) {
         if (!this.musicIsPlaying || forcetrue) {
             this.bgMusic.play();
@@ -285,7 +304,7 @@ export class SceneOne extends Scene {
         }
     }
 
-    //deteccion de colision de tormenta con el borde y rebote
+    /**bounceTornado(), deteccion de colision de tormenta con borde y rebote*/
     bounceTornado(tornado: Physics.Arcade.Sprite) {
 
         var top = this.physics.world.bounds.top;
@@ -293,25 +312,20 @@ export class SceneOne extends Scene {
         var left = this.physics.world.bounds.left;
         var right = this.physics.world.bounds.right;
 
-        this.display.message(`Far top border: ${top}, \nTornado y: ${tornado.y} \n directionX: ${tornado.horizontalDirection} \ndirectionY: ${tornado.verticalDirection}`);
         if ((tornado.x + 23) === right) {
             tornado.horizontalDirection = "izquierda";
-            this.display.message(`revotandoTornado izquierda `);
         }
         if ((tornado.x - 23) === left) {
             tornado.horizontalDirection = "derecha";
-            this.display.message(`revotandoTornado derecha `);
         }
         if((tornado.y+21)===bottom){
             tornado.verticalDirection = "abajo";
-            this.display.message(`revotandoTornado abajo `);
         }
         if((tornado.y-21)===top){
             tornado.verticalDirection = "arriba";
-            this.display.message(`revotandoTornado arriba `);
         }
     }
-
+    /**listener de colisión entre jeep y base*/
     collisionListenerBetweenBaseAndJeep() {
         this.physics.add.collider(
             this.iconoBase,
@@ -320,6 +334,7 @@ export class SceneOne extends Scene {
             null,
             this);
     }
+    /**listener de colisión entre muestras y base*/
     collisionListenerBetweenSampleAndJeep() {
         this.physics.add.collider(
             this.iconoMuestra1,
@@ -346,15 +361,13 @@ export class SceneOne extends Scene {
             this.collectSampleHit,
             null,
             this);
-
     }
-
-    //colisiones entre jeep y tormentas
+  
+    /*listener de colisión entre jeep y tormentas*/
     collisionListenerBetweenTornadoAndJeep() {
         this.physics.add.collider(
             this.jeep1.sprite,
             this.iconoTornado1,
-            // this.jeep1.sprite,
             this.tornadoHit,
             null,
             this);
@@ -362,14 +375,12 @@ export class SceneOne extends Scene {
         this.physics.add.collider(
             this.jeep1.sprite,
             this.iconoTornado2,
-            //this.jeep1.sprite,
             this.tornadoHit,
             null,
             this);
-
-
     }
   
+    /**listener de colisión entre jeep y crateres*/
     collisionListenerBetweenCraterAndJeep() {
         this.physics.add.collider(
             this.iconoCrater1,
@@ -397,46 +408,31 @@ export class SceneOne extends Scene {
             null,
             this);
 
-        //    this.physics.add.collider(
-        // this.crater1.craterImage,
-        //     this.jeep1.sprite,
-        //    this.jeep1.collisionWithCrater,
-        //     null,
-        //     this);
     }
+   
     collisionHit() {
-
-        this.display.message(`Crater1 colission`);
         this.collision = this.jeep1.direction;
     }
     tornadoHit() {
-
-        this.display.message(`Crater1 colission`);
         this.jeep1.onTornadoCollision();
-        // this.collision = this.jeep1.direction;
     }
 
+    /** recogida de muestras, comprueba si todas las muestras han sido recogidas*/
     collectSampleHit(sample, jeep) {
         sample.visible = false;
         this.jeep1.onSampleCollected();
         this.Comprobar();
-
     }
+   /** Comprobar(), comprueba que los recursos han sido recogidos*/
     Comprobar() {
         if (this.iconoMuestra1.visible == false && this.iconoMuestra2.visible == false
             && this.iconoMuestra3.visible == false && this.iconoMuestra4.visible == false) {
-            this.display.message(`all Samples Collected, return to base`);
+                    this.display.message(`all Samples Collected, return to base`);
         }
     }
 
-    playerHit() {//probando para colision con crater1
 
-        this.display.message(`Crater colission in ${this.jeep1.sprite.x} and ${this.jeep1.sprite.y}`);
-
-    }
-
+    /* baseHit, llama a repairShield, la cual repara el jeep**/
     baseHit() {
-
-        this.display.message(`Base colission in ${this.jeep1.sprite.x} and ${this.jeep1.sprite.y}`);
         this.jeep1.repairShield();
     }

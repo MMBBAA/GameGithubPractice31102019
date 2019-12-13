@@ -4,9 +4,6 @@ import { SceneOne } from './scenes/SceneOne';
 
 export class Jeep2 {
   
-        
-    
-
     initialX: number
     initialY: number
     scene: SceneOne
@@ -14,16 +11,16 @@ export class Jeep2 {
     sprite: Physics.Arcade.Sprite
     bateria: number;
     //oxigen: number;//variable oxigeno
-    oxigen: number=10000;//cantidad inicial oxigeno7500
+    oxigen: number=100;//cantidad inicial oxigeno7500
     oxigenBajoNivel=20;//nivel bajo de oxigeno
-    bateriaInicial: number = 1000;
+    bateriaInicial: number = 3000;
     bateriaBajoNivel = 100
     initialDirection: string = 'right';
     direction: string;
     currentImage: any;
     imageTextures: Array<any> = [];
     sounds: Array<any> = [];
-    fatalFailure: boolean = false;
+    fatalFailure: boolean = false;//nos indica que el jeep está disabled
     speed: number = 1;
     limite: number =62;//probando
     engineRunning: boolean = false;
@@ -56,8 +53,8 @@ export class Jeep2 {
         }else{
             this.shield=1000;
         }
-      
     }
+
     preloadImages() {
 
         this.config.images.forEach((imagen) => {
@@ -75,17 +72,11 @@ export class Jeep2 {
             let url = `${dir}${audio.src}`;
             let key = audio.id;
             this.scene.load.audio(key, [url]);
-            //console.table(audio.options);
-            //this.sounds[key] = this.scene.sound.add(key, audio.options);
         });
     }
     addAudios() {
         this.config.audio.forEach((audio) => {
-            // let dir = this.config.audio_dir;
-            //  let url = `${dir}${audio.src}`;
             let key = audio.id;
-            //   this.scene.load.audio(key, [url]);
-            //  console.table(audio.options);
             this.sounds[key] = this.scene.sound.add(key, audio.options);
         });
     }
@@ -136,14 +127,14 @@ export class Jeep2 {
          }
      }
 
-    onSampleCollected(){//funcion de sonido de muestra
+     /** onSampleCollected(), reproduce Sample Collected sound */
+    onSampleCollected(){
         this.playSound('MuestraRecogida');
     }
 
     _move(direction: string, dx = 1, dy = 1) {
         if (this.scene.collision === direction) {
             this.onCraterCollision();
-            // console.log("colision con crater 1");
         }
         else {
             this.scene.collision = null;
@@ -153,9 +144,7 @@ export class Jeep2 {
                 if (!this.fatalFailure) {
                     this.sprite.x = this.sprite.x + (dx * this.speed);
                     this.sprite.y = this.sprite.y + (dy * this.speed);
-
                     this.setDirection(direction);
-                    // this.playSound('Freno');
                     this.bateria--;
                 }
             }
@@ -183,21 +172,10 @@ export class Jeep2 {
 
     playSound(soundID) {
 
-        //  let loop = this.config.audio.[soundID].options.loop;
-
-        // this.scene.sound.play(soundID);
-
-        //console.table(this.sounds);
-        // this.sounds[soundID].play && 
-       // console.log(soundID);
         if (this.sounds[soundID].seek === 0) {
             this.sounds[soundID].play();
         }
 
-        // if (soundID == 'BateriaBaja') {
-        // this.scene.sound.play(soundID);
-        // this.sounds[soundID].loop();
-        //}
     }
 
     arranque() {
@@ -209,27 +187,29 @@ export class Jeep2 {
     }
 
     stop() {
-
+        //está por implementar, no tiene contenido
     }
 
     onBreak() {
         this.notMoving = true;
 
-        //            if (this.sounds['Jeep'].seek != 0) {
+    if (this.sounds['Jeep'].seek != 0) {
         this.sounds['Jeep'].stop();
-
     }
-
+    }
     break() {
         this.playSound('Freno');
     }
-    //recarga de bateria con la letra r
+    //recarga con letra r
     rechargeBattery() {
+        /* ampliable:  fatalFailure se usa en este caso para la bateria, pero podría ser otra averia*/ 
+        this.fatalFailure=false;
         this.bateria++;
         this.playSound('RecargaEnergia');
     }
 
-    oxigenDecrement(){//va reduciendo oxigeno del jeep
+    /*oxigenDecrement, reduce jeep oxigen continuously**/ 
+    oxigenDecrement(){
      
         if(this.oxigen>0){
            this.limite--;
@@ -237,11 +217,9 @@ export class Jeep2 {
                 this.oxigen--;
                 this.limite=62;
             }
-          //  console.log(this.oxigenInicial);
         }
         else{
             this.oxigen=0;
-           // console.log(this.oxigenInicial);
         } 
     }
 
@@ -258,7 +236,7 @@ export class Jeep2 {
         }
     }
 
-    // informa si la batería está por debajo de 150, se repite continuamente
+    // informa si la batería está por debajo de 100, se repite continuamente
     batteryCheck() {
         //if(!this.batteryWarningOn){}
         if (this.bateriaAgotado) {
@@ -266,10 +244,13 @@ export class Jeep2 {
             return;
         }
         if (!this.batteryWarningOn) {
-
             if (this.bateria <= this.bateriaBajoNivel) {
                 this.batterLowWarningOn();
             }
+        }
+        else{
+            if(this.bateria>this.bateriaBajoNivel)
+            this.batteryLowWarningOff();
         }
     }
     collisionWithCrater() {
@@ -282,11 +263,12 @@ export class Jeep2 {
     }
 
     batteryLowWarningOff() {
+        this.batteryWarningOn = false;
         this.stopSound('BateriaBaja');
     }
 
     shutDown() {
-        this.batteryLowWarningOff();
+       // this.batteryLowWarningOff();
     }
     onFailure(data, fatalFailure = false) {
         if (fatalFailure) {
@@ -295,7 +277,7 @@ export class Jeep2 {
         }
         // this.feedbackHandler('failure', data);
     }
-    //funcion que reduce oxigeno continuamente
+    /**  oxigenCheck(), avisa si el nivel de oxígeno está en reserva*/
     oxigenCheck(){
         //oxigenInicial=50;
         if(this.oxigen<this.oxigenBajoNivel && this.oxigen>0){
@@ -305,12 +287,13 @@ export class Jeep2 {
 
     onDeadBattery() {
         if (!this.fatalFailure) {
-            this.playSound('Energia');
+            //this.playSound('Energia');
             this.batteryLowWarningOff();
             this.playSound('Freno');
             this.onFailure('dead-battery', true);
         }
     }
+
 
     stopSound(soundID) {
         this.sounds[soundID].stop();
@@ -318,7 +301,6 @@ export class Jeep2 {
 
     update() {
         if (!this.fatalFailure) {
-            // this.shieldCheck();
             this.oxigenDecrement();
             this.oxigenCheck();
             this.batteryCheck();
@@ -326,6 +308,7 @@ export class Jeep2 {
             this.scene.display.updateShieldMessage(this.shield);
             this.scene.display.updateEnergyMessage(this.bateria);
             this.scene.display.updateOxigenMessage(this.oxigen);
+            
         }
     }
 
@@ -338,6 +321,7 @@ export class Jeep2 {
         this.escudosDestruidos = false;
 
     }
+
 
     get shieldLow() {
         return this.shield <= this.escudosNivelDeAdvertencia && this.shield > 0;
@@ -372,6 +356,4 @@ export class Jeep2 {
                 this.onFailure('no-shields', true);
             }
         }
-
-
     }

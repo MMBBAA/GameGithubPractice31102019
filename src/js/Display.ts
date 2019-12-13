@@ -1,4 +1,5 @@
 import { Scene } from 'phaser';
+
 export class Display {
     messageBox: any;
     messageShieldBox: any;
@@ -10,8 +11,6 @@ export class Display {
 
     constructor(config:any) {
         this.scene = config.scene;
-     //   this.shieldMessageBoxSetup();
-       // this.messageBoxSetup();
     }
 
     create(){
@@ -53,10 +52,24 @@ export class Display {
                     fill: 'white'
                 });
     }
+    //mensaje de victoria o derrota
+    checkGameStateBoxSetup(msg='',x=550,y=50){
+        this.messageShieldBox=
+            this.scene.add.text(
+                x,
+                y,
+                msg,
+                {
+                    fontSize: '14px',
+                    fill: 'white'
+                });
+    }
 
     updateEnergyMessage(msg){
         this.messagePowerBox.setText(`POWER:${msg}`);
     }
+
+
 
     powerMessageBoxSetup(msg = '', x = 450, y = 50) {
         //this.messageBox =
