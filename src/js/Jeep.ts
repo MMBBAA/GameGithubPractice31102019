@@ -1,4 +1,4 @@
-import { Physics, Scene, GameObjects } from 'phaser'
+/*import { Physics, Scene, GameObjects } from 'phaser'
 
 export class Jeep {
 
@@ -317,3 +317,4 @@ export class Jeep {
   }
 }
 
+*/

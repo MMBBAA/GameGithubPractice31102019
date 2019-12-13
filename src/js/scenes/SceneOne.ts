@@ -8,7 +8,6 @@ import { Tornado } from '../Tornado';
 
 export class SceneOne extends Scene {
     iconobase: Phaser.GameObjects.Image | undefined;
-
     planetMarsWidth: number = 890;
     planetMarsHeight: number = 590;
     jeep1: Jeep2;
@@ -51,7 +50,7 @@ export class SceneOne extends Scene {
     collision: string;
     display: Display;
    
-
+    /* constructor, llama a constructor de la clase Scene. */
     constructor() {
         super({
             key: 'SceneOne'
@@ -59,6 +58,7 @@ export class SceneOne extends Scene {
         this.display = new Display({ scene: this });
     }
 
+    /** preload, carga las imágenes y sonidos */
     preload() {
 
         this.jeep1 = new Jeep2(this, 400, 300, JeepConfig);
@@ -87,6 +87,7 @@ export class SceneOne extends Scene {
 
     }
 
+    /**create(), crea el juego */
     create() {
 
         this.bgMusic = this.sound.add('musicaFondo', {
@@ -158,6 +159,7 @@ export class SceneOne extends Scene {
         this.positionReturnBase();
     }
 
+    /** loadImagesFunction(), carga de imágenes en scene */
     loadImagesFunction() {
         this.load.image('base', '../../../assets/images/iconobase.png');
         this.load.image('bg', '../../../assets/images/suelo2.jpg');
@@ -173,16 +175,16 @@ export class SceneOne extends Scene {
     this.physics.world.setBoundsCollision(true);//activa o desactiva los bordes del mundo
 }
 
-    /*función cameraSetup, permitiría seguir el movimiento del jeep con una camara, no se ha empleado*/ 
+    /**función cameraSetup(), permitiría seguir el movimiento del jeep con una camara, no se ha empleado*/ 
     cameraSetup() {
         this.camera = this.cameras.main;
         // Camera can move to bounds of world
         this.camera.setBounds(0, 0, this.planetMarsWidth, this.planetMarsHeight)
 
         // make camera follow jeep    
-        //this.camera.startFollow(this.jeep1.sprite);
+        //this.camera.startFollow(this.jeep1.sprite);//al descomentar la camara persigue al jeep
     }
-    /* eventos de teclado*/
+    /** función keySetup(): keyboard events*/
     keysSetup() {
         this.key_M = this.input.keyboard.addKey(Input.Keyboard.KeyCodes.M);
         this.key_A = this.input.keyboard.addKey(Input.Keyboard.KeyCodes.A);
@@ -190,9 +192,9 @@ export class SceneOne extends Scene {
         this.key_S = this.input.keyboard.addKey(Input.Keyboard.KeyCodes.S);
         this.key_D = this.input.keyboard.addKey(Input.Keyboard.KeyCodes.D);
         this.key_R = this.input.keyboard.addKey(Input.Keyboard.KeyCodes.R);
-        //this.key_SPACE = this.input.keyboard.addKey(Input.Keyboard.KeyCodes.SPACE);
-    }
 
+    }
+    /** keyListener(), switch, mueve el jeep según el evento de tecla abajo se produzca */
     keysListener() {
         switch (true) {
             case this.key_D.isDown:
@@ -217,11 +219,11 @@ export class SceneOne extends Scene {
                 break;
         }
 
-      //  if (this.key_SPACE.isDown) this.jeep1.onBreak//();
         if (this.key_D.isUp && this.key_A.isUp && this.key_S.isUp
             && this.key_W.isUp) this.jeep1.stop();
     }
 
+    /**function update(): actualiza continuamente funciones mientras el juego está en marcha */
     update(delta, time) {
 
         this.keysListener();
@@ -231,10 +233,10 @@ export class SceneOne extends Scene {
         this.stopGameJeep();
         this.moveTornado(this.iconoTornado1);
         this.moveTornado(this.iconoTornado2);
-       // this.cameraSetup();//probando
+       // this.cameraSetup();//not using it
 
     }
-
+    /** checkGameState, comprueba estados del juego y envia mensaje de victoria o derrota*/
     checkGameState(){
 
         if((this.jeep1.oxigen==0)||(this.jeep1.shield==0)){
@@ -248,7 +250,7 @@ export class SceneOne extends Scene {
                 this.display.message(`Mision cumplida`);
             }
     }
-    /*detiene el juego cuando se cumpla la victoria o la derrota*/ 
+    /** stopGameJeep(): detiene el juego cuando se cumpla la victoria o la derrota*/ 
     stopGameJeep(){
     if(this.victory==true||this.defeat==true){
         this.toggleMusic(false);
@@ -256,7 +258,7 @@ export class SceneOne extends Scene {
         this.jeep1.onBreak();
         }
 }
-    /*cambia el valor de onBase a true o false*/ 
+    /** positionReturnBase() cambia el valor de onBase a true/false segun posición de jeep*/ 
     positionReturnBase(){
         if((this.jeep1.sprite.x>=316&&this.jeep1.sprite.x<=484)
         &&(this.jeep1.sprite.y>=252&&this.jeep1.sprite.y<=370)){
@@ -268,7 +270,7 @@ export class SceneOne extends Scene {
         }
     }
 
-    /*metodo para mover el tornado*/
+    /*moveTornado(), metodo para mover el tornado*/
     moveTornado(tornado: Physics.Arcade.Sprite) {
         let speed = 2
         let directionX = 1;
@@ -292,7 +294,7 @@ export class SceneOne extends Scene {
         this.bounceTornado(tornado);
     }
 
-    /**activa o desactiva la musica */
+    /** toogleMusic() activa o desactiva la musica */
     toggleMusic(forcetrue = false) {
         if (!this.musicIsPlaying || forcetrue) {
             this.bgMusic.play();

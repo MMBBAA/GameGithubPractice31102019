@@ -123,6 +123,7 @@ export const JeepConfig = {
       src: 'Escudos_Bajos.mp3',
       type: 'escudos'
     },
+  
     {
       id: 'EscudosBajos2',
       src: 'Sonido_Escudos_Bajos.mp3',
